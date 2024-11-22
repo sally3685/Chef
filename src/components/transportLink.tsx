@@ -1,6 +1,6 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
-import { animatePageOut } from '@/app/animation';
+import { animateAuthOut } from '@/app/animation';
 interface Props {
   href: string;
   label: string;
@@ -10,7 +10,7 @@ const TransportLink = ({ href, label }: Props) => {
   const pathname = usePathname();
   const handleClick = () => {
     if (pathname !== href) {
-      animatePageOut(href, router);
+      animateAuthOut(href, router);
     }
   };
   return <button onClick={handleClick}>{label}</button>;

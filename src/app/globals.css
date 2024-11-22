@@ -22,6 +22,9 @@ body {
 .cl-internal-1una0r3 {
   background: aqua !important;
 }
+
+/* Include the elastic ease keyframes in the CSS */
+
 @layer utilities {
   .section-min-height {
     min-height: calc(100vh - 68px);

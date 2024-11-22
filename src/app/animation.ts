@@ -1,92 +1,11 @@
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 import Flip from 'gsap/dist/Flip';
-// import { usePathname } from 'next/navigation';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-const rots = [
-  { ry: 0, rx: 0 },
-  { ry: 90, rx: 0 },
-  { ry: 180, rx: 0 },
-  { ry: 270, rx: 0 },
-  { ry: 0, rx: 90 },
-  { ry: 0, rx: -90 },
-];
-export const animate = () => {
-  const pathname = window.location.href;
-  const faces = document.querySelectorAll('.face');
-  const cube = document.getElementById('cube');
-  if (faces) {
-    const tl = gsap.timeline({
-      defaults: {
-        duration: 1,
-        ease: 'expo.inOut',
-      },
-    });
-    // tl.set(faces, {
-    //   rotateY: (i) => rots[i].ry,
-    //   rotateX: (i) => rots[i].rx,
-    //   transformOrigin: '50% 50% -150px',
-    //   z: 150,
+import { Layers2 } from 'lucide-react';
 
-    //   // background: (i) => ` 0px -${i * 300}px`,
-    // });
-    if (pathname.includes('sign-up')) {
-      tl.to(cube, {
-        rotateX: 0,
-        rotateY: -90,
-      });
-    } else if (pathname.includes('sign-in')) {
-      tl.to(cube, {
-        rotateX: 45,
-        rotateY: -60,
-      }).to(cube, {
-        rotateX: -90,
-        rotateY: 0,
-      });
-    } else if (pathname.includes('verify-email')) {
-      tl.to(cube, {
-        rotateX: 0,
-        rotateY: -60,
-      }).to(cube, {
-        rotateX: 90,
-        rotateY: 0,
-      });
-    } else if (pathname.includes('forgot-password')) {
-      tl.to(cube, {
-        rotateX: -45,
-        rotateY: 60,
-      }).to(cube, {
-        rotateX: 0,
-        rotateY: -180,
-      });
-    }
-    // .to(cube, {
-    //   rotateX: 0,
-    //   rotateY: -180,
-    // });
-    // .to(cube, {
-    //   rotateX: 0,
-    //   rotateY: -270,
-    // })
-    // .to(cube, {
-    //   rotateX: -90,
-    //   rotateY: -360,
-    // });
-    // .to(cube, {
-    //   rotateX: 90,
-    //   rotateY: -360,
-    // });
-    // .to(cube, {
-    //   rotateX: 0,
-    //   rotateY: -360,
-    // });
-  }
+export const animate = () => {
   const highliter = document.querySelectorAll('.highliter');
-  const textup = document.querySelectorAll('.textup');
-  const textup1 = document.querySelectorAll('.textup1');
-  const textup2 = document.querySelectorAll('.textup2');
-  const box1 = document.querySelectorAll('.box1');
-  const box2 = document.querySelectorAll('.box2');
   const items = document.querySelectorAll('.item');
   const herb1 = document.querySelectorAll('.herb1');
   const herb2 = document.querySelectorAll('.herb2');
@@ -197,7 +116,6 @@ export const animate = () => {
       scrub: true,
     });
   };
-
   ScrollTrigger.create({
     trigger: tomato5,
     start: 'top center',
@@ -207,45 +125,12 @@ export const animate = () => {
     onEnter: () => doFlip(),
     onEnterBack: () => doFlip(),
   });
-  // const flip = Flip.from(state, {
-  //   scrollTrigger: {
-  //     trigger: tomato5,
-  //     start: 'center center',
-  //     end: 'bottom+=100% center',
-  //     markers: { indent: 200 },
-  //   },
-  // });
-  // const tl2 = gsap.timeline();
-  // tl2.add(flip); // Add flip tween to a timeline
-  // tl2.to(tomato, {
-  //   // Random other tween
-  //   rotate: 360,
-  // });
   const tl = gsap.timeline();
-  tl
-    // .to(textup, {
-    //   height: '45px',
-    //   ease: 'back.in',
-    // })
-    //   .to(textup1, {
-    //     height: '40px',
-    //     ease: 'back.in',
-    //   })
-    //   .to(textup2, {
-    //     height: '40px',
-    //     ease: 'back.in',
-    //   })
-    .to(highliter, {
-      backgroundSize: '100% 100%',
-      ease: 'back.in',
-      duration: 3,
-    })
-    // .to(box1, {
-    //   scale: '0.9',
-    // })
-    // .to(box2, {
-    //   scale: '1',
-    // })
+  tl.to(highliter, {
+    backgroundSize: '100% 100%',
+    ease: 'back.in',
+    duration: 3,
+  })
     .fromTo(
       herb1,
       {
@@ -269,25 +154,6 @@ export const animate = () => {
       },
       '<'
     );
-  // .fromTo(
-  //   tomato5,
-  //   {
-  //     x: '-117px',
-  //   },
-  //   {
-  //     x: '117px',
-  //     duration: 3,
-  //     rotate: '360deg',
-  //     scrollTrigger: {
-  //       start: 'top center',
-  //       markers: true,
-  //       scrub: true,
-  //     },
-  //   }
-  // );
-  // Loop through each item and set up a
-  // Set up individual ScrollTriggers for each item within the section
-
   items.forEach((item) => {
     gsap.to(item, {
       scrollTrigger: {
@@ -300,51 +166,54 @@ export const animate = () => {
     });
   });
 };
-export const animatePageOut = (href: string, router: AppRouterInstance) => {
-  // const faces = document.querySelectorAll('.face');
-  // const cube = document.getElementById('cube');
-  // if (faces) {
-  //   const tl = gsap.timeline({
-  //     defaults: {
-  //       duration: 1,
-  //       ease: 'expo.inOut',
-  //     },
-  //   });
-  // tl.set(faces, {
-  //   rotateY: (i) => rots[i].ry,
-  //   rotateX: (i) => rots[i].rx,
-  //   transformOrigin: '50% 50% -150px',
-  //   z: 150,
-  // });
-  // tl.to(cube, {
-  //   rotateX: 0,
-  //   rotateY: -90,
-  //   onComplete: () => {
-  //
-  //   },
-  // });
-  //     .to(cube, {
-  //       rotateX: 0,
-  //       rotateY: -180,
-  //     })
-  //     .to(cube, {
-  //       rotateX: 0,
-  //       rotateY: -270,
-  //     })
-  //     .to(cube, {
-  //       rotateX: -90,
-  //       rotateY: -360,
-  //     })
-  //     .to(cube, {
-  //       rotateX: 90,
-  //       rotateY: -360,
-  //     })
-  //     .to(cube, {
-  //       rotateX: 0,
-  //       rotateY: -360,
-  //       onComplete: () => {
-  //       },
-  //     });
-  // }
-  router.push(href);
+export const animateAuthOut = (href: string, router: AppRouterInstance) => {
+  const items = document.querySelectorAll('.enterAnimation');
+  const items1 = document.querySelectorAll('.enterAnimation1');
+  const tl = gsap.timeline();
+  tl.fromTo(
+    items,
+    {
+      y: 0,
+      opacity: 1,
+    },
+    { y: -50, stagger: 0.2, ease: 'back.out', opacity: 0, position: 'relative' }
+  ).fromTo(
+    items1,
+    {
+      y: 0,
+      opacity: 1,
+    },
+    {
+      y: -50,
+      stagger: 0.2,
+      opacity: 0,
+      ease: 'back.out',
+      position: 'relative',
+      onComplete: () => {
+        router.push(href);
+      },
+    },
+    '='
+  );
+};
+export const animateAuthEnter = () => {
+  const items = document.querySelectorAll('.enterAnimation');
+  const items1 = document.querySelectorAll('.enterAnimation1');
+  const tl = gsap.timeline();
+  tl.fromTo(
+    items,
+    {
+      y: -50,
+      opacity: 0,
+    },
+    { y: 0, stagger: 0.2, ease: 'back.out', opacity: 1, position: 'relative' }
+  ).fromTo(
+    items1,
+    {
+      y: -50,
+      opacity: 0,
+    },
+    { y: 0, stagger: 0.2, ease: 'back.out', opacity: 1, position: 'relative' },
+    '='
+  );
 };

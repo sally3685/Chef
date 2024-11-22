@@ -16,17 +16,26 @@ import { useRef, useState } from 'react';
 import { ClerkAPIError } from '@clerk/types';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
 import { useEffect } from 'react';
+import TransportLink from '@/components/transportLink';
+import OauthSignIn from '../../email';
+const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,20}$/;
+const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+import gsap from 'gsap';
 export default function Page() {
   const userRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const passdwordRef = useRef<HTMLInputElement>(null);
-  const { isLoaded, signUp, setActive } = useSignUp();
+  const { isLoaded, signUp } = useSignUp();
   const [emailAddress, setEmailAddress] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [submit, setsubmit] = React.useState(false);
   const [verifying, setVerifying] = React.useState(false);
 
+  const [validName, setValidName] = useState(false);
+  const [validPwd, setValidPwd] = useState(false);
+  const [validEmail, setValidEmail] = useState(false);
   const [errorsPassword, setErrorsPassword] = React.useState<ClerkAPIError[]>();
   const [errorsEmail, setErrorsEmail] = React.useState<ClerkAPIError[]>();
   const [errorsUsername, setErrorsUsername] = React.useState<ClerkAPIError[]>();
@@ -38,8 +47,144 @@ export default function Page() {
   useEffect(() => {
     userRef?.current?.focus();
   }, []);
+
   const [isVisible, setIsVisible] = useState(false);
 
+  const tl = useRef(
+    gsap.timeline({
+      paused: true,
+    })
+  );
+  const layer1 = document.getElementById('layer1');
+  const layer2 = document.getElementById('layer2');
+  const layer3 = document.getElementById('layer3');
+
+  useEffect(() => {
+    let value;
+    if (USER_REGEX.test(username) && !errorsUsername) {
+      value = '7rem';
+      if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
+        value = '12.65rem';
+        if (PWD_REGEX.test(password) && !errorsPassword) {
+          value = '18.2rem';
+        }
+      }
+    } else {
+      value = '2.25rem';
+    }
+    tl.current = gsap
+      .timeline({
+        defaults: {
+          duration: 1.5,
+          ease: 'bounce',
+        },
+      })
+      .to(layer1, {
+        top: value,
+      });
+    setValidName(USER_REGEX.test(username));
+  }, [username, errorsUsername]);
+  useEffect(() => {
+    setValidPwd(PWD_REGEX.test(password));
+    let valueE;
+    let valueU;
+    let valueP;
+    if (PWD_REGEX.test(password) && !errorsPassword) {
+      valueE = '14rem';
+      valueU = '18.2rem';
+      valueP = '8.5rem';
+
+      if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
+        valueE = '3rem';
+        if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
+        else valueU = '7rem';
+      } else {
+        if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
+      }
+    } else {
+      valueE = '8.55rem';
+      valueU = '12.65rem';
+      valueP = '3rem';
+
+      if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
+        valueE = '3rem';
+        if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
+        else valueU = '7rem';
+      } else {
+        if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
+      }
+    }
+    tl.current = gsap
+      .timeline({
+        defaults: {
+          duration: 1.5,
+          ease: 'bounce',
+        },
+      })
+      .to(layer1, {
+        top: valueU,
+        delay: 0.02,
+      })
+      .to(
+        layer2,
+        {
+          top: valueE,
+
+          delay: 0.04,
+        },
+        '='
+      )
+      .to(
+        layer3,
+        {
+          top: valueP,
+        },
+        '='
+      );
+  }, [password, errorsPassword]);
+  useEffect(() => {
+    setValidEmail(EMAIL_REGEX.test(emailAddress));
+    let valueE;
+    let valueU;
+    if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
+      valueE = '8.55rem';
+      valueU = '12.65rem';
+
+      if (PWD_REGEX.test(password) && !errorsPassword) {
+        valueE = '14rem';
+        valueU = '18.2rem';
+      }
+      if (!USER_REGEX.test(username) || errorsUsername) {
+        valueU = '2.25rem';
+      }
+    } else {
+      valueE = '3rem';
+      valueU = '7rem';
+
+      if (!USER_REGEX.test(username) || errorsUsername) {
+        valueU = '2.25rem';
+      }
+    }
+    tl.current = gsap
+      .timeline({
+        defaults: {
+          duration: 1.5,
+          ease: 'bounce',
+        },
+      })
+      .to(layer1, {
+        top: valueU,
+
+        delay: 0.02,
+      })
+      .to(
+        layer2,
+        {
+          top: valueE,
+        },
+        '='
+      );
+  }, [emailAddress, errorsEmail]);
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };
@@ -73,7 +218,6 @@ export default function Page() {
     } catch (err: any) {
       setsubmit(false);
       if (isClerkAPIResponseError(err)) {
-        console.log(err);
         err.errors.map((el: any) => {
           if (el.meta?.paramName === 'password') {
             setErrorsPassword((prev) => {
@@ -120,209 +264,359 @@ export default function Page() {
   // Display the initial sign-up form to capture the email and password
   return (
     <>
-      <main className="flex flex-col justify-center items-center   w-full h-full p-6">
-        <h1 className="text-xl font-medium mb-4"> انشاء حساب</h1>
-        {submit && <h2>يتم متابعة الطلب الرجاء الانتظار ...</h2>}
-        <form
-          className="flex flex-col justify-center items-center space-y-4 w-full mb-4"
-          onSubmit={(e) => handleSubmit(e)}
-        >
-          <div className="flex flex-col space-y-2 items-start  w-full">
-            <label
-              htmlFor="username"
-              className="flex text-sm space-x-3 justify-center items-center "
-              title={
-                errorsUsername
-                  ? 'خطأ بالادخال'
-                  : firstSubmit && !errorsUsername
-                  ? 'ادخال صحيح'
-                  : ''
-              }
+      <main className="flex gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row flex-col-reverse">
+        <div className="lg:w-1/2 w-[85%]">
+          <>
+            <h1 className="enterAnimation text-3xl font-medium mb-4 text-center">
+              {' '}
+              انشاء حساب
+            </h1>
+            {submit && (
+              <h2 className="text-center">
+                يتم متابعة الطلب الرجاء الانتظار ...
+              </h2>
+            )}
+            <form
+              className="flex flex-col justify-center items-center space-y-4 w-full mb-4"
+              onSubmit={(e) => handleSubmit(e)}
             >
-              اسم المستخدم
-              <CircleCheck
-                color="#18f231"
-                className={
-                  errorsUsername || firstSubmit === false ? 'hidden' : 'block'
-                }
-              />
-              <CirclePlus
-                color="red"
-                style={{ transform: 'rotate(45deg)' }}
-                className={errorsUsername ? 'block' : 'hidden'}
-              />
-            </label>
-            <input
-              autoComplete="off"
-              placeholder="john doe"
-              className=" w-full rounded p-[2px] text-[#151517]"
-              id="username"
-              type="text"
-              name="username"
-              ref={userRef}
-              value={username}
-              required
-              aria-invalid={errorsUsername ? 'false' : 'true'}
-              aria-errormessage="username-error"
-              onChange={(e) => setUsername(e.target.value)}
-              // aria-describedby="uidnote"
-              // onFocus={() => setUserFocus(true)}
-              // onBlur={() => setUserFocus(false)}
-            />
-            {/* <p
+              <div className="enterAnimation flex relative flex-col space-y-2 items-start z-[4]  w-full">
+                <label
+                  htmlFor="username"
+                  className="flex text-lg space-x-3 justify-center items-center "
+                  title={
+                    errorsUsername
+                      ? 'خطأ بالادخال'
+                      : firstSubmit && !errorsUsername
+                      ? 'ادخال صحيح'
+                      : ''
+                  }
+                >
+                  اسم المستخدم
+                  <CircleCheck
+                    color="#18f231"
+                    className={
+                      errorsUsername || !validName ? 'hidden' : 'block'
+                    }
+                  />
+                  <CirclePlus
+                    color="red"
+                    style={{ transform: 'rotate(45deg)' }}
+                    className={errorsUsername ? 'block' : 'hidden'}
+                  />
+                </label>
+                <input
+                  autoComplete="off"
+                  placeholder="john doe"
+                  className=" w-full rounded p-2 text-[#151517]"
+                  id="username"
+                  type="text"
+                  name="username"
+                  ref={userRef}
+                  value={username}
+                  aria-describedby="usernote"
+                  required
+                  aria-invalid={errorsUsername ? 'false' : 'true'}
+                  aria-errormessage="username-error"
+                  onChange={(e) => setUsername(e.target.value)}
+                  // aria-describedby="uidnote"
+                  onFocus={() => setUserFocus(true)}
+                  onBlur={() => setUserFocus(false)}
+                />
+                <div
+                  id="layer1"
+                  className=" absolute w-[65px] h-[39px] lg:w-[80px] lg:h-[45px] bg-[url(/bread2.svg)] bg-cover bg-no-repeat bg-center top-9 !m-0 left-0 lg:right-[103%] "
+                ></div>
+                {/* <p
           ref={errRef}
           className={errMsg ? "errmsg" : "offscreen"}
           aria-live="assertive"
         >
           {errMsg}
         </p> */}
-            <div
-              id="username-error"
-              aria-live="assertive"
-              className={
-                errorsUsername ? 'block text-xs text-red-600' : 'hidden'
-              }
-            >
-              {errorsUsername && (
-                <ul>
-                  {errorsUsername.map((el, index) => (
-                    <li key={index}>{el.longMessage}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col space-y-2 items-start  w-full">
-            <label
-              htmlFor="email"
-              className="flex space-x-3 justify-center items-center text-sm"
-              title={
-                errorsEmail
-                  ? 'خطأ بالادخال'
-                  : firstSubmit && !errorsEmail
-                  ? 'ادخال صحيح'
-                  : ''
-              }
-            >
-              {' '}
-              البريد الالكتروني
-              <CircleCheck
-                color="#18f231"
-                className={
-                  errorsEmail || firstSubmit === false ? 'hidden' : 'block'
-                }
-              />
-              <CirclePlus
-                color="red"
-                style={{ transform: 'rotate(45deg)' }}
-                className={errorsEmail ? 'block' : 'hidden'}
-              />
-            </label>
-            <input
-              ref={emailRef}
-              className="w-full !rounded text-[#151517] p-[2px]"
-              id="email"
-              type="email"
-              name="email"
-              value={emailAddress}
-              required
-              aria-invalid={errorsEmail ? 'false' : 'true'}
-              aria-errormessage="email-error"
-              onChange={(e) => setEmailAddress(e.target.value)}
-              // onFocus={() => setEmailFocus(true)}
-              // onBlur={() => setEmailFocus(false)}
-            />
-            <div
-              id="email-error"
-              aria-live="assertive"
-              className={errorsEmail ? 'block text-xs text-red-600' : 'hidden'}
-            >
-              {errorsEmail && (
-                <ul>
-                  {errorsEmail.map((el, index) => (
-                    <li key={index}>{el.longMessage}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col items-start space-y-2 w-full ">
-            <label
-              htmlFor="password"
-              className="flex space-x-3 text-sm justify-center items-center "
-              title={
-                errorsPassword
-                  ? 'خطأ بالادخال'
-                  : firstSubmit && !errorsPassword
-                  ? 'ادخال صحيح'
-                  : ''
-              }
-            >
-              {' '}
-              كلمة المرور
-              <CircleCheck
-                color="#18f231"
-                className={
-                  errorsPassword || firstSubmit === false ? 'hidden' : 'block'
-                }
-              />
-              <CirclePlus
-                color="red"
-                style={{ transform: 'rotate(45deg)' }}
-                className={errorsPassword ? 'block' : 'hidden'}
-              />
-            </label>
-            <input
-              ref={passdwordRef}
-              autoComplete="new-password"
-              className="w-full rounded !text-[#151517]  p-[2px]"
-              id="password"
-              type="password"
-              name="password"
-              value={password}
-              required
-              aria-invalid={errorsPassword ? 'false' : 'true'}
-              aria-errormessage="password-error"
-              onChange={(e) => setPassword(e.target.value)}
-              // onFocus={() => setPasswordFocus(true)}
-              // onBlur={() => setPasswordFocus(false)}
-            />
-            <div
-              id="password-error"
-              aria-live="assertive"
-              className={
-                errorsPassword ? 'block text-xs text-red-600' : 'hidden'
-              }
-            >
-              {errorsPassword && (
-                <ul>
-                  {errorsPassword.map((el, index) => (
-                    <li key={index}>{el.longMessage}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
+                <div
+                  id="username-error"
+                  aria-live="assertive"
+                  className={
+                    errorsUsername ? 'block text-sm text-red-600' : 'hidden'
+                  }
+                >
+                  {errorsUsername && (
+                    <ul>
+                      {errorsUsername.map((el, index) => (
+                        <li key={index}>{el.longMessage}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <div className="enterAnimation flex relative flex-col space-y-2 items-start z-[3] w-full">
+                <label
+                  htmlFor="email"
+                  className="flex space-x-3 justify-center items-center text-lg"
+                  title={
+                    errorsEmail
+                      ? 'خطأ بالادخال'
+                      : firstSubmit && !errorsEmail
+                      ? 'ادخال صحيح'
+                      : ''
+                  }
+                >
+                  {' '}
+                  البريد الالكتروني
+                  <CircleCheck
+                    color="#18f231"
+                    className={errorsEmail || !validEmail ? 'hidden' : 'block'}
+                  />
+                  <CirclePlus
+                    color="red"
+                    style={{ transform: 'rotate(45deg)' }}
+                    className={errorsEmail ? 'block' : 'hidden'}
+                  />
+                </label>
+                <input
+                  ref={emailRef}
+                  className="w-full !rounded text-[#151517] p-2"
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={emailAddress}
+                  aria-describedby="emailnote"
+                  required
+                  aria-invalid={errorsEmail ? 'false' : 'true'}
+                  aria-errormessage="email-error"
+                  onChange={(e) => setEmailAddress(e.target.value)}
+                  onFocus={() => setEmailFocus(true)}
+                  onBlur={() => setEmailFocus(false)}
+                />
 
-          <button
-            type="submit"
-            disabled={submit ? true : false}
-            className="w-1/2 rounded p-[4px] bg-orange-400"
-          >
-            متابعة
-          </button>
-        </form>
-        {/* <button type="button" aria-label="Show password">
+                <div
+                  id="layer2"
+                  className="lg:w-[80px] lg:h-[29px] w-[70px] h-[20px] absolute bg-[url(/cheese.svg)] bg-cover bg-no-repeat bg-center  top-12 !m-0 left-0 lg:right-[103%] "
+                  // top-[127px]
+                ></div>
+
+                <div
+                  id="email-error"
+                  aria-live="assertive"
+                  className={
+                    errorsEmail ? 'block text-sm text-red-600' : 'hidden'
+                  }
+                >
+                  {errorsEmail && (
+                    <ul>
+                      {errorsEmail.map((el, index) => (
+                        <li key={index}>{el.longMessage}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <div className="enterAnimation flex flex-col items-start space-y-2 w-full relative z-[2]">
+                <label
+                  htmlFor="password"
+                  className="flex space-x-3 text-lg justify-center items-center "
+                  title={
+                    errorsPassword
+                      ? 'خطأ بالادخال'
+                      : firstSubmit && !errorsPassword
+                      ? 'ادخال صحيح'
+                      : ''
+                  }
+                >
+                  {' '}
+                  كلمة المرور
+                  <CircleCheck
+                    color="#18f231"
+                    className={errorsPassword || !validPwd ? 'hidden' : 'block'}
+                  />
+                  <CirclePlus
+                    color="red"
+                    style={{ transform: 'rotate(45deg)' }}
+                    className={errorsPassword ? 'block' : 'hidden'}
+                  />
+                </label>
+                <input
+                  ref={passdwordRef}
+                  autoComplete="new-password"
+                  className="w-full rounded !text-[#151517]  p-2"
+                  id="password"
+                  type="password"
+                  name="password"
+                  value={password}
+                  aria-describedby="passwordnote"
+                  required
+                  aria-invalid={errorsPassword ? 'false' : 'true'}
+                  aria-errormessage="password-error"
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setPasswordFocus(true)}
+                  onBlur={() => setPasswordFocus(false)}
+                />
+                <div
+                  id="layer3"
+                  className="lg:w-[80px] lg:h-[29px] w-[67px] h-[24px] absolute bg-[url(/meat.svg)] bg-cover bg-no-repeat bg-center  top-12 !m-0 left-0 lg:right-[103%] "
+                ></div>
+                <div
+                  id="password-error"
+                  aria-live="assertive"
+                  className={
+                    errorsPassword ? 'block text-sm text-red-600' : 'hidden'
+                  }
+                >
+                  {errorsPassword && (
+                    <ul>
+                      {errorsPassword.map((el, index) => (
+                        <li key={index}>{el.longMessage}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <div className="enterAnimation flex z-[1] justify-center items-center relative w-full">
+                <div className="w-[68px] h-[30px] lg:w-[81px] lg:h-[36px] absolute bg-[url(/bread1.svg)] bg-cover bg-no-repeat bg-center  top-12 left-0 m-0 lg:!right-[103%]"></div>{' '}
+                <button
+                  type="submit"
+                  disabled={submit ? true : false}
+                  className="w-1/2 m-auto rounded p-2 bg-orange-400"
+                >
+                  متابعة
+                </button>
+              </div>
+              {/* <TransportLink href={'/sign-in'} label={'متابعة'} /> */}
+            </form>
+            {/* <button type="button" aria-label="Show password">
   <div class="eye-icon">
 </button> 
 
   Show a loading state to the user
 */}
 
-        <section className="flex space-x-4 text-sm text-[#d8d8d8]">
-          <p> لديك حساب مسبقا ? </p>
-          <Link href="/sign-in"> تسجيل دخول</Link>
-        </section>
+            <section className="enterAnimation flex space-x-4 text-lg text-[#d8d8d8] justify-center items-center">
+              <p> لديك حساب مسبقا ؟ </p>
+              <TransportLink href={'/sign-in'} label={'تسجيل دخول'} />
+              {/* <Link href="/sign-in"> تسجيل دخول </Link> */}
+            </section>
+            <section className="enterAnimation">
+              <OauthSignIn />
+            </section>
+          </>
+        </div>
+        <div
+          id="container"
+          className="lg:h-[400px] h-20 overflow-hidden lg:overflow-visible lg:w-1/2 w-[85%] relative "
+        >
+          <div
+            className={`enterAnimation1 absolute h-[45px] top-3 justify-center lg:justify-end gap-6 items-center w-full ${
+              userFocus ? 'flex' : 'hidden'
+            } lg:flex`}
+          >
+            {!validName ? (
+              <span
+                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
+                style={{ border: '2px solid white' }}
+              >
+                1
+              </span>
+            ) : (
+              <CircleCheck color="grey" />
+            )}
+            <p
+              id="usernote"
+              className={
+                !validName ? 'text-white w-3/4' : 'text-[#808080] w-3/4'
+              }
+            >
+              يجب أن يتراوح بين 4 إلى 24 حرفًا، ويبدأ دائمًا بحرف، ويقبل بالحروف
+              والأرقام والشرطات والشرطات السفلية
+            </p>
+          </div>
+
+          <div
+            className={`enterAnimation1 absolute h-[29px] top-3 lg:top-[4.5rem] justify-center lg:justify-end gap-6 items-center w-full ${
+              emailFocus ? 'flex' : 'hidden'
+            } lg:flex`}
+          >
+            {!validEmail ? (
+              <span
+                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
+                style={{ border: '2px solid white' }}
+              >
+                2
+              </span>
+            ) : (
+              <CircleCheck color="grey" />
+            )}
+            <p
+              id="emailnotes"
+              className={
+                !validEmail ? 'text-white w-3/4' : 'text-[#808080] w-3/4'
+              }
+            >
+              يحتوي على علامة @ ويحتوي على أحرف قبل @
+            </p>
+          </div>
+
+          <div
+            className={`enterAnimation1 justify-center lg:justify-end absolute h-[27px] top-3 lg:top-[8.5rem]  gap-6 items-center w-full ${
+              passwordFocus ? 'flex' : 'hidden'
+            } lg:flex`}
+          >
+            {!validPwd ? (
+              <span
+                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
+                style={{ border: '2px solid white' }}
+              >
+                3
+              </span>
+            ) : (
+              <CircleCheck color="grey" />
+            )}
+            <p
+              id="passwordnotes"
+              className={
+                !validPwd ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'
+              }
+            >
+              يجب أن يحتوي على 8 إلى 24 حرفًا، ويشمل حرفًا كبيرًا وحرفًا صغيرًا،
+              ورقمًا، وحرفًا خاصًا. الرموز الخاصة المسموحة:! @ $ % #
+            </p>
+          </div>
+
+          <div
+            className={`enterAnimation1 hidden lg:flex justify-center lg:justify-end absolute h-[32px] top-3 lg:top-[13rem]  gap-6 items-center w-full `}
+          >
+            {!submit ? (
+              <span
+                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
+                style={{ border: '2px solid white' }}
+              >
+                4
+              </span>
+            ) : (
+              <CircleCheck color="grey" />
+            )}
+            <p
+              id="usernote"
+              className={!submit ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'}
+            >
+              اضغط على متابعة وفي حال ظهور رسائل خطأ صحح الاخطاء واضغط مجددا
+              للتحقق
+            </p>
+          </div>
+
+          <div
+            className={`enterAnimation1 lg:hidden justify-center lg:justify-end absolute h-[32px] top-3 lg:top-[19rem]  gap-6 items-center w-full ${
+              !passwordFocus && !userFocus && !emailFocus ? 'flex' : 'hidden'
+            }`}
+          >
+            <p
+              className={!submit ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'}
+            >
+              املأ الحقول واضغط على متابعة وفي حال ظهور رسائل خطأ صحح الاخطاء
+              واضغط مجددا للتحقق
+            </p>
+          </div>
+        </div>
       </main>
     </>
   );

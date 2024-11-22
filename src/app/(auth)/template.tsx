@@ -1,88 +1,72 @@
 'use client';
 
 import { useEffect } from 'react';
-import { animate } from '../animation';
-import { usePathname } from 'next/navigation';
+import { animateAuthEnter } from '../animation';
+import { usePathname, useRouter } from 'next/navigation';
+import { CircleCheck } from 'lucide-react';
+// import { animatePageOut } from '@/app/animation';
+
 export default function Template({ children }: { children: React.ReactNode }) {
   const pageType = usePathname();
+  const router = useRouter();
   useEffect(() => {
-    animate();
+    animateAuthEnter();
+    // animateAuth(pageType, router);
   }, []);
+
   return (
     <>
-      <div
-        id="containerofcube"
-        className="w-[500px] h-[500px] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        style={{ perspective: '1000px' }}
-      >
-        {' '}
-        <div
-          id="cube"
-          className="w-[500px] h-[500px] absolute "
-          style={{ transformStyle: 'preserve-3d' }}
-        >
+      {children}
+      {/* <div className="flex gap-10 justify-center items-center section-min-height">
+        <div className="w-[450px]">{children}</div>
+        <div id="container" className="h-[400px] w-20 relative ">
           <div
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(250px) rotateX(0deg) rotateY(0deg)',
-              transformOrigin: '50% 50% -250px',
-            }}
-            className=" face !bg-cover !bg-center  dark:bg-[#eea1437d] bg-[#c7e198]  dark:border dark:border-[#f3e37c] dark:border-y-2 dark:border-x-2  w-[500px] h-[500px] absolute "
+            id="layer1"
+            className=" w-full h-[45px] absolute bg-[url(/bread2.svg)] bg-contain bg-no-repeat bg-center z-[4] top-[0px]"
+          >
+            
+          </div>
+          <div
+            id="layer2"
+            className="w-full h-[29px] absolute bg-[url(/cheese.svg)] bg-contain bg-no-repeat bg-center z-[3] top-[127px]"
           ></div>
           <div
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(250px) rotateX(0deg) rotateY(90deg)',
-              transformOrigin: '50% 50% -250px',
-            }}
-            className=" face !bg-cover !bg-center  dark:bg-[#eee5437b] bg-[#c7e198] dark:border dark:border-[#f3e37c] dark:border-y-2 dark:border-x-2  w-[500px] h-[500px] absolute"
-          >
-            {pageType === '/sign-up' ? children : ''}
+            id="layer3"
+            className="w-full h-[27px] absolute bg-[url(/meat.svg)] bg-contain bg-no-repeat bg-center z-[2] top-[235px]"
+          ></div>
+          <div className="w-full h-[32px] absolute bg-[url(/bread1.svg)] bg-contain bg-no-repeat bg-center z-[1] top-[343px]"></div>
+        </div>
+        <div id="container1" className="h-[400px] w-20 relative ">
+          <div id="tick1" className=" w-full h-[45px] absolute   top-[0px]">
+           
+            <CircleCheck color="grey" />
           </div>
-          <div
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(250px) rotateX(0deg) rotateY(180deg)',
-              transformOrigin: '50% 50% -250px',
-            }}
-            className=" face !bg-cover !bg-center  dark:bg-[#eea1437d] bg-[#c7e198]  dark:border dark:border-[#f3e37c] dark:border-y-2 dark:border-x-2  w-[500px] h-[500px] absolute"
-          >
-            {pageType === '/forgot-password' ? children : ''}
+          <div id="tick2" className="w-full h-[29px] absolute  top-[127px]">
+            <span
+              className="w-[24px] h-[20px] px-[6px] pb-[1px] text-center rounded-[50%]"
+              style={{ border: '2px solid white' }}
+            >
+              2
+            </span>
           </div>
-          <div
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(250px) rotateX(0deg) rotateY(270deg)',
-              transformOrigin: '50% 50% -250px',
-            }}
-            className=" face !bg-cover !bg-center  dark:bg-[#eee5437b] bg-[#c7e198]  dark:border dark:border-[#f3e37c] dark:border-y-2 dark:border-x-2  w-[500px] h-[500px] absolute"
-          >
-            {' '}
+          <div id="tick3" className="w-full h-[27px] absolute   top-[235px]">
+            <span
+              className="w-[24px] h-[20px] px-[6px] pb-[1px] text-center rounded-[50%]"
+              style={{ border: '2px solid white' }}
+            >
+              3
+            </span>
           </div>
-          <div
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(250px) rotateX(90deg) rotateY(0deg)',
-              transformOrigin: '50% 50% -250px',
-            }}
-            className=" face !bg-cover !bg-center  dark:bg-[#eea1437d] bg-[#c7e198]  dark:border dark:border-[#f3e37c] dark:border-y-2 dark:border-x-2  w-[500px] h-[500px] absolute"
-          >
-            {pageType === '/sign-in' ? children : ''}
-          </div>
-          <div
-            style={{
-              transformStyle: 'preserve-3d',
-              transform: 'translateZ(250px) rotateX(-90deg) rotateY(0deg)',
-              transformOrigin: '50% 50% -250px',
-            }}
-            className=" face !bg-cover !bg-center  dark:bg-[#eee5437b] bg-[#c7e198]  dark:border dark:border-[#f3e37c] dark:border-y-2 dark:border-x-2  w-[500px] h-[500px] absolute"
-          >
-            {pageType === '/verify-email' ? children : ''}
+          <div className="w-full h-[32px] absolute top-[343px]">
+            <span
+              className="w-[24px] h-[20px] px-[6px] pb-[1px] text-center rounded-[50%]"
+              style={{ border: '2px solid white' }}
+            >
+              4
+            </span>
           </div>
         </div>
-      </div>
-
-      {/* {children} */}
+      </div> */}
     </>
   );
 }
