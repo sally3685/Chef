@@ -8,6 +8,7 @@ import { useGSAP } from '@gsap/react';
 import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { UserButton } from '@clerk/nextjs';
+import ThemeSwitch from './ThemeSwitch';
 export default function Header() {
   const { isSignedIn } = useUser();
   console.log('User signed in:', isSignedIn);
@@ -117,6 +118,7 @@ export default function Header() {
           <h1 className="text-3xl font-bold bottom-0 sm:text-4xl dark:text-white text-black">
             الشيف
           </h1>
+          <ThemeSwitch></ThemeSwitch>
         </div>
         <button
           className="lg:hidden block cursor-pointer"

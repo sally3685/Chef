@@ -24,7 +24,10 @@ body {
 }
 
 /* Include the elastic ease keyframes in the CSS */
-
+.try {
+  grid-row: 1 / span 2 !important;
+  grid-column: 9 / span 2 !important;
+}
 @layer utilities {
   .section-min-height {
     min-height: calc(100vh - 68px);

@@ -1,43 +1,57 @@
 'use client';
-import { isValidElement, ReactNode, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Card from '../../_component/Card';
-import Image from 'next/image';
-import itemsArray from './items';
-type Props = {
-  typeId: string;
-  recipyId: string;
-};
+import { useGSAP } from '@gsap/react';
+import { ReactNode } from 'react';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 export default function Detaileslayout({
-  children,
   ingredients,
-  reviews,
   writeReviews,
-  recipy,
   information,
   rating,
-  calory,
-  params,
+  foodImage,
 }: {
   information: ReactNode;
   rating: ReactNode;
-  children: React.ReactNode;
   ingredients: React.ReactNode;
-  reviews: React.ReactNode;
   writeReviews: React.ReactNode;
-  recipy: React.ReactNode;
-  calory: React.ReactNode;
-  params: Props;
+  foodImage: React.ReactNode;
 }) {
-  // const {recipyId}=await params;
-  const param: any = useSearchParams();
-  const ingre = param.get('ingredient');
-  const write = param.get('writeReview');
-  const cal = param.get('calories');
+  useGSAP(() => {
+    const sec = document.querySelectorAll('.section');
+    // gsap.defaults({ ease: 'ease.in' });
+    const animateSections = () => {
+      gsap.defaults({ ease: 'power1.out' });
+      gsap.fromTo(
+        sec,
+        {
+          scale: 0,
+        },
+        {
+          scale: 1,
+          ease: 'power1.out',
+          stagger: {
+            amount: 0.5,
+            grid: 'auto',
+            from: 'start',
+          },
+        }
+      );
+    };
+
+    // Initial animation on page load
+    animateSections();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', () => {
+      // Reset the scale to 0 before animating again
+      gsap.set(sec, { scale: 0 });
+      animateSections();
+    });
+  });
 
   return (
     <main
-      className="max-w-8xl my-12 mx-6 md:mx-12 3xl:mx-auto grid 
+      className="contain max-w-8xl my-12 mx-6 md:mx-12 3xl:mx-auto grid 
       xl:grid-cols-[1fr_1fr_1fr_1fr_1fr]
        xl:grid-rows-[0.2fr_0.5fr_0.5fr_0.2fr_0.6fr] 
     lg:grid-rows-[0.2fr_0.1fr_0.5fr_0.1fr_0.6fr]
@@ -50,126 +64,11 @@ export default function Detaileslayout({
     
     "
     >
-      {ingre === 'true' ? (
-        <section
-          className="xl:row-span-3 xl:col-span-3 xl:row-start-1 xl:col-start-1 shadow-[0_0_11px_4px_#f3a738] border border-l-2 border-b-2 border-t-2 border-r-2 border-[#f3a738] 
-          dark:bg-transparent
-          bg-[#f3a738]
-           lg:row-span-3 lg:col-span-4 
-        lg:row-start-1 lg:col-start-1
-        sm:row-span-3 sm:col-span-5 
-        sm:row-start-1 sm:col-start-1
-        row-span-2 col-span-1 
-        row-start-3 col-start-1
-        p-6 text-xl space-y-4
-        overflow-hidden
-        xl:max-h-[692px]
-        
-        lg:max-h-[610px]
-        
-        sm:max-h-[740px]
-        max-h-[670px]
-        "
-        >
-          {ingredients}
-        </section>
-      ) : cal !== null ? (
-        <section
-          className="xl:row-span-3 xl:col-span-3 xl:row-start-1 xl:col-start-1 shadow-[0_0_11px_4px_#f3a738] border border-l-2 border-b-2 border-t-2 border-r-2 border-[#f3a738] 
-          bg-[#f3a738]
-          dark:bg-transparent
-           lg:row-span-3 lg:col-span-4 
-        lg:row-start-1 lg:col-start-1
-        sm:row-span-3 sm:col-span-5 
-        sm:row-start-1 sm:col-start-1
-        row-span-2 col-span-1 
-        row-start-3 col-start-1
-        p-6 text-xl space-y-4
-        overflow-hidden
-        xl:max-h-[692px]
-        
-        lg:max-h-[610px]
-        sm:max-h-[740px]
-        max-h-[670px]
-        
-        "
-        >
-          {calory}
-        </section>
-      ) : (
-        <section
-          className="xl:row-span-3 xl:col-span-3 xl:row-start-1 xl:col-start-1 shadow-[0_0_11px_4px_#f3a738] border border-l-2 border-b-2 border-t-2 border-r-2 border-[#f3a738] 
-          bg-[#f3a738]
-          dark:bg-transparent
-           lg:row-span-3 lg:col-span-4 
-        lg:row-start-1 lg:col-start-1
-        sm:row-span-3 sm:col-span-5 
-        sm:row-start-1 sm:col-start-1
-        row-span-2 col-span-1 
-        row-start-3 col-start-1
-        p-6 text-xl space-y-4
-        overflow-hidden
-        xl:max-h-[692px]
-        lg:max-h-[610px]
-        sm:max-h-[740px]
-        max-h-[670px]
-        
-        "
-        >
-          {recipy}
-        </section>
-      )}
+      {ingredients}
 
-      {write === 'true' ? (
-        <section
-          className="xl:row-span-2 xl:col-span-3 shadow-[0_0_11px_4px_#eea243] border border-l-2 border-b-2 border-t-2 border-r-2 border-[#eea243]
-        xl:row-start-4 xl:col-start-3
-        dark:bg-transparent
-        bg-[#eea243]
-        lg:row-span-1 lg:col-span-4 
-        lg:row-start-5 lg:col-start-2
-        
-        sm:row-span-2 sm:col-span-5 
-        sm:row-start-6 sm:col-start-1
-        
-        row-span-1 col-span-1 
-        row-start-6 col-start-1
-        overflow-hidden
-           xl:max-h-[446px]
-        lg:max-h-[657px]
-        sm:max-h-[590px]
-        max-h-[450px]
-        "
-        >
-          {writeReviews}
-        </section>
-      ) : (
-        <section
-          className=" xl:row-span-2 xl:col-span-3 shadow-[0_0_11px_4px_#eea243] border border-l-2 border-b-2 border-t-2 border-r-2 border-[#eea243]
-        xl:row-start-4 xl:col-start-3
-        dark:bg-transparent
-        bg-[#eea243]
-        
-        lg:row-span-1 lg:col-span-4 
-        lg:row-start-5 lg:col-start-2
-        
-        sm:row-span-2 sm:col-span-5 
-        sm:row-start-6 sm:col-start-1
-        
-        row-span-1 col-span-1 
-        row-start-6 col-start-1
-        overflow-hidden
-            xl:max-h-[446px]
-        lg:max-h-[657px]
-        sm:max-h-[590px]
-        max-h-[450px]
-        "
-        >
-          {reviews}
-        </section>
-      )}
+      {writeReviews}
       <section
-        className="
+        className="section 
         xl:row-span-2 xl:col-span-2 shadow-[0_0_11px_4px_#f3d34a] border border-l-2 border-b-2 border-t-2 border-r-2 border-[#f3d34a]
         xl:row-start-4 xl:col-start-1
         
@@ -192,48 +91,43 @@ export default function Detaileslayout({
         {information}
       </section>
       <section
-        className="
+        className="section 
         xl:row-span-1 xl:col-span-2  
         xl:row-start-1 xl:col-start-4
         
-        lg:row-span-1 lg:col-span-3 
-        lg:row-start-4 lg:col-start-2
+        lg:row-span-1 lg:col-span-2 
+        lg:row-start-1 lg:col-start-4
         
         sm:row-span-1 sm:col-span-2 
         sm:row-start-4 sm:col-start-1
         
         row-span-1 col-span-1 
         row-start-2 col-start-1
-        overflow-hidden
+        overflow-visible
         
+        max-h-[80px]
         "
       >
         {rating}
       </section>
       <section
-        className=" border border-l-2 border-b-2 border-t-2 border-r-2 border-[#f3e37c]
-        xl:row-span-2 xl:col-span-2 
+        className="section  xl:row-span-2 xl:col-span-2 
         xl:row-start-2 xl:col-start-4
-        lg:row-span-4 lg:col-span-1 
-        lg:row-start-1 lg:col-start-5
-        
+        lg:row-span-4 lg:col-span-2 
+        lg:row-start-2 lg:col-start-4   
         sm:row-span-1 sm:col-span-2 
         sm:row-start-5 sm:col-start-1
-        shadow-[0_0_11px_4px_#f3e37c]
         row-span-1 col-span-1 
         row-start-1 col-start-1
-        overflow-hidden
+        overflow-visible
         xl:max-h-[548px]
-        lg:max-h-[610px]
+        xl:max-w-[548px]
+        lg:max-h-[412px]
         sm:max-h-[440px]
         max-h-[496px]
         "
       >
-        <Image
-          src={itemsArray[parseInt(params.recipyId) - 1].src}
-          alt={itemsArray[parseInt(params.recipyId) - 1].title}
-          className="w-full h-full "
-        ></Image>
+        {foodImage}
       </section>
     </main>
   );

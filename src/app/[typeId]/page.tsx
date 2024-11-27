@@ -1,8 +1,5 @@
 import Home from './_component/content';
-import { Metadata } from 'next';
-import Throw from './_component/Throw';
 import Menu from './_component/Menu';
-import Link from 'next/link';
 const food = [
   {
     id: '1',
@@ -28,11 +25,14 @@ const food = [
 
 type Props = {
   params: {
-    typeId: string;
+    typeId: string | undefined;
   };
 };
 export const generateMetadata = async ({ params }: Props) => {
-  const { typeId } = await params;
+  let { typeId } = await params;
+  if (!typeId) {
+    typeId = '1';
+  }
   if (isNaN(parseInt(typeId) - 1) || parseInt(typeId) - 1 >= food.length) {
     return {
       title: `Not found 404`,
@@ -43,12 +43,12 @@ export const generateMetadata = async ({ params }: Props) => {
     };
   }
 };
-export default async function Meta({ params }: Props) {
+export default async function Meta() {
   return (
     <>
       {/* <Throw></Throw> */}
 
-      <Home params={await params}></Home>
+      <Home></Home>
 
       <Menu></Menu>
     </>

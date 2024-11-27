@@ -7,6 +7,7 @@ import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 import { useAnimation } from '@/helpers/useAnimation';
 import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
+import { useParams } from 'next/navigation';
 const food = [
   {
     id: '1',
@@ -34,13 +35,21 @@ type Props = {
     typeId: string;
   };
 };
-export default function Home({ params }: Props) {
+export default function Home() {
   const cardRef2 = useRef<HTMLDivElement | null>(null);
   const cardRef3 = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const params = useParams();
   const { typeId } = params;
+  let t;
+  if (typeId) {
+    t = typeId[0];
+  } else return null;
   useGSAP(
     () => {
+      const highliter = document.querySelectorAll('.highliter');
+      const herb1 = document.querySelectorAll('.herb1');
+      const herb2 = document.querySelectorAll('.herb2');
       let mm = gsap.matchMedia();
 
       mm.add('(max-width:1024px)', () => {
@@ -82,13 +91,42 @@ export default function Home({ params }: Props) {
             }
           );
       });
+      const tl = gsap.timeline();
+      tl.to(highliter, {
+        backgroundSize: '100% 100%',
+        ease: 'back.in',
+        duration: 3,
+      })
+        .fromTo(
+          herb1,
+          {
+            rotate: '10deg',
+          },
+          {
+            rotate: '0deg',
+            repeat: 3,
+            yoyo: true,
+          }
+        )
+        .fromTo(
+          herb2,
+          {
+            rotate: '185deg',
+          },
+          {
+            rotate: '180deg',
+            repeat: 3,
+            yoyo: true,
+          },
+          '<'
+        );
     },
     { scope: containerRef }
   );
 
   //https://stackademic.com/blog/how-to-use-gsap-with-nextjs-14-and-ssr
 
-  if (isNaN(parseInt(typeId) - 1) || parseInt(typeId) - 1 >= food.length) {
+  if (isNaN(parseInt(t) - 1) || parseInt(t) - 1 >= food.length) {
     notFound();
   }
   return (
@@ -101,7 +139,7 @@ export default function Home({ params }: Props) {
           <div className="space-y-6  w-full text-center px-4">
             <div className="textup inline-block overflow-hidden ">
               <h1 className="sm:text-3xl text-2xl font-bold">
-                {food[parseInt(typeId) - 1].title}
+                {food[parseInt(t) - 1].title}
               </h1>
             </div>
 

@@ -2,25 +2,98 @@
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import itemsArray from '../detailes/[recipyId]/items';
+import { useGSAP } from '@gsap/react';
+
+import ScrollTrigger from 'gsap/dist/ScrollTrigger';
+import Flip from 'gsap/dist/Flip';
+import gsap from 'gsap';
+import ScrollSmoother from 'gsap/all';
+import { useEffect, useRef } from 'react';
+const classes = [
+  ['!row-start-1', '!col-start-1'],
+  ['!row-start-2', '!col-start-4'],
+  ['!row-start-1', '!col-start-7'],
+  ['!row-start-4', '!col-start-9'],
+  ['!row-start-6', '!col-start-7'],
+  ['!row-start-7', '!col-start-8'],
+  ['!row-start-9', '!col-start-7'],
+  ['!row-start-10', '!col-start-9'],
+  ['!row-start-1', '!col-start-9'],
+  ['!row-start-1', '!col-start-5'],
+  ['!row-start-4', '!col-start-7'],
+];
 export default function Menu() {
-  const pathname = usePathname();
+  let pathname = usePathname();
+  if (!pathname) pathname = '1';
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  useGSAP(() => {
+    const states = document.querySelectorAll('.tomato');
+    const items = document.querySelectorAll('.wood');
+    const section = document.querySelector('.section');
+    gsap.registerPlugin(ScrollTrigger, ScrollSmoother, Flip);
+
+    ScrollTrigger.refresh();
+
+    states.forEach((tomatoElement, index) => {
+      tomatoElement?.classList.remove(...classes[index]);
+    });
+    // flipCtx = gsap.context(() => {
+    const allStates = gsap.utils.toArray('.tomato') as HTMLElement[];
+
+    const state = Flip.getState(allStates);
+    states.forEach((tomatoElement, index) => {
+      tomatoElement?.classList.add(...classes[index]);
+    });
+    const flip = Flip.from(state, {
+      duration: 2,
+      ease: 'power1.inOut',
+      // stagger: 0.1,
+      rotate: 400,
+      onComplete: () => console.log('done'),
+    });
+    ScrollTrigger.create({
+      trigger: containerRef?.current,
+      start: 'top center',
+      end: '+=20%',
+      animation: flip,
+      // pin: true,
+      scrub: true,
+      markers: true,
+    });
+    items.forEach((item) => {
+      gsap.to(item, {
+        rotate: 360,
+        scrollTrigger: {
+          scroller: section,
+          trigger: item,
+          start: 'top bottom',
+          scrub: true,
+        },
+      });
+    });
+  });
+
   return (
     <>
       <div className="relative w-full overflow-hidden">
-        <div className="grid grid-cols-10 grid-rows-10 w-[30%] h-[50%] left-0 top-0 absolute">
-          <div className="tomato8 row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
-          <div className="tomato7 row-span-1 col-span-1 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
-          <div className="tomato6 row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
-          <div className="tomato4 row-span-1 col-span-1 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
+        <div
+          ref={containerRef}
+          className="grid grid-cols-10 grid-rows-10 w-[90%] sm:w-[30%]  h-[50%] left-0 top-0 absolute ggg"
+        >
+          <div className="tomato row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
           <div className="tomato row-span-1 col-span-1 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
-          <div className="tomato1 row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
-          <div className="tomato2 row-span-1 col-span-1 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
-          <div className="tomato3 row-span-1 col-span-1 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
-          <div className="tomato9 row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato2.png)] bg-contain bg-no-repeat bg-center  scale-50"></div>
-          <div className="tomato10 row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato2.png)] bg-contain bg-no-repeat bg-center  scale-75"></div>
-          <div className="tomato5 row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato2.png)] bg-contain bg-no-repeat bg-center  scale-75"></div>
+          <div className="tomato row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
+          <div className="tomato row-span-1 col-span-1 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
+          <div className="tomato row-span-1 col-span-1 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
+          <div className="tomato row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
+          <div className="tomato row-span-1 col-span-1 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
+          <div className="tomato row-span-1 col-span-1 row-start-1 col-start-10 bg-[url(/tomato3.png)] bg-contain bg-no-repeat bg-center "></div>
+          <div className="tomato row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato2.png)] bg-contain bg-no-repeat bg-center  scale-50"></div>
+          <div className="tomato row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato2.png)] bg-contain bg-no-repeat bg-center  scale-75"></div>
+          <div className="tomato row-span-2 col-span-2 row-start-1 col-start-10 bg-[url(/tomato2.png)] bg-contain bg-no-repeat bg-center  scale-75"></div>
         </div>
-        <section className=" relative  max-w-6xl sm:mx-auto mx-8 ">
+        <section className=" relative  max-w-6xl sm:mx-auto mx-8 z-[3]">
           <h2 className="my-12 text-3xl">وصفات متنوعة</h2>
           <div
             className="max-w-6xl mx-auto p-6 relative section
@@ -61,10 +134,10 @@ export default function Menu() {
                   </g>
                 </svg>
 
-                <div className="relative flex justify-between flex-col h-full mt-4">
+                <div className="relative   flex justify-between flex-col h-full mt-4">
                   <Image
                     className={`
-              w-56 h-52  absolute shadow-[0_0_20px_5px_black] rounded-[50%] -left-9 -top-6`}
+              w-56 h-52 absolute shadow-[0_0_20px_5px_black] rounded-[50%] -left-9 -top-6`}
                     src="/wooden.png"
                     alt="wooden"
                     width="251"
@@ -84,7 +157,7 @@ export default function Menu() {
                   ></Image>
                   <Image
                     className={`
-              w-40 h-40  relative -left-[40%] -top-[50]`}
+              w-40 h-40 wood relative -left-[40%] -top-[50]`}
                     src={item ? item.src : ''}
                     alt={item ? item.title : ''}
                   ></Image>
