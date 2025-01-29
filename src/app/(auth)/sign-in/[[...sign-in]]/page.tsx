@@ -5,13 +5,12 @@ import { useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CircleCheck, CirclePlus, Eye, EyeOff } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useEffect } from 'react';
 import { ClerkAPIError } from '@clerk/types';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
 import TransportLink from '@/components/transportLink';
 import OauthSignIn from '../../email';
-
 import gsap from 'gsap';
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,20}$/;
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -21,6 +20,7 @@ export default function SignInForm() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [passwordEye, setPasswordEye] = React.useState(false);
   const [submit, setsubmit] = React.useState(false);
   const [validPwd, setValidPwd] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
@@ -30,6 +30,7 @@ export default function SignInForm() {
   const [emailFocus, setEmailFocus] = React.useState(false);
   const [passwordFocus, setPasswordFocus] = React.useState(false);
   const router = useRouter();
+
   useEffect(() => {
     emailRef?.current?.focus();
   }, []);
@@ -38,76 +39,84 @@ export default function SignInForm() {
       paused: true,
     })
   );
-  const layer1 = document.getElementById('layer1');
-  const layer2 = document.getElementById('layer2');
-  useEffect(() => {
-    let value;
-    if (EMAIL_REGEX.test(email) && !errorsEmail) {
-      value = '7rem';
-      if (PWD_REGEX.test(password) && !errorsPassword) {
-        value = '12.65rem';
-        // if (PWD_REGEX.test(password) && !errorsPassword) {
-        //   value = '18.2rem';
-        // }
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const layer1 = document.getElementById('layer1');
+      const layer2 = document.getElementById('layer2');
+      let value;
+      if (EMAIL_REGEX.test(email) && !errorsEmail) {
+        value = '7rem';
+        if (PWD_REGEX.test(password) && !errorsPassword) {
+          value = '12.65rem';
+          // if (PWD_REGEX.test(password) && !errorsPassword) {
+          //   value = '18.2rem';
+          // }
+        }
+      } else {
+        value = '2.25rem';
       }
-    } else {
-      value = '2.25rem';
-    }
-    tl.current = gsap
-      .timeline({
-        defaults: {
-          duration: 1.5,
-          ease: 'bounce',
-        },
-      })
-      .to(layer1, {
-        top: value,
-      });
-    setValidEmail(EMAIL_REGEX.test(email));
+      tl.current = gsap
+        .timeline({
+          defaults: {
+            duration: 1.5,
+            ease: 'bounce',
+          },
+        })
+        .to(layer1, {
+          top: value,
+        });
+      setValidEmail(EMAIL_REGEX.test(email));
+    });
+    return () => ctx.revert();
   }, [email, errorsEmail]);
 
-  useEffect(() => {
-    setValidPwd(PWD_REGEX.test(password));
-    let valueE;
-    let valueU;
-    if (PWD_REGEX.test(password) && !errorsPassword) {
-      valueE = '8.55rem';
-      valueU = '12.65rem';
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const layer1 = document.getElementById('layer1');
+      const layer2 = document.getElementById('layer2');
+      setValidPwd(PWD_REGEX.test(password));
+      let valueE;
+      let valueU;
+      if (PWD_REGEX.test(password) && !errorsPassword) {
+        valueE = '8.55rem';
+        valueU = '12.65rem';
 
-      // if (PWD_REGEX.test(password) && !errorsPassword) {
-      //   valueE = '14rem';
-      //   valueU = '18.2rem';
-      // }
-      if (!EMAIL_REGEX.test(email) || errorsEmail) {
-        valueU = '2.25rem';
+        // if (PWD_REGEX.test(password) && !errorsPassword) {
+        //   valueE = '14rem';
+        //   valueU = '18.2rem';
+        // }
+        if (!EMAIL_REGEX.test(email) || errorsEmail) {
+          valueU = '2.25rem';
+        }
+      } else {
+        valueE = '3rem';
+        valueU = '7rem';
+
+        if (!EMAIL_REGEX.test(email) || errorsEmail) {
+          valueU = '2.25rem';
+        }
       }
-    } else {
-      valueE = '3rem';
-      valueU = '7rem';
+      tl.current = gsap
+        .timeline({
+          defaults: {
+            duration: 1.5,
+            ease: 'bounce',
+          },
+        })
+        .to(layer1, {
+          top: valueU,
 
-      if (!EMAIL_REGEX.test(email) || errorsEmail) {
-        valueU = '2.25rem';
-      }
-    }
-    tl.current = gsap
-      .timeline({
-        defaults: {
-          duration: 1.5,
-          ease: 'bounce',
-        },
-      })
-      .to(layer1, {
-        top: valueU,
-
-        delay: 0.02,
-      })
-      .to(
-        layer2,
-        {
-          top: valueE,
-        },
-        '='
-      );
+          delay: 0.02,
+        })
+        .to(
+          layer2,
+          {
+            top: valueE,
+          },
+          '='
+        );
+    });
+    return () => ctx.revert();
   }, [password, errorsPassword]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -132,6 +141,7 @@ export default function SignInForm() {
       // and redirect the user
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId });
+
         router.push('/');
       } else {
         // If the status is not complete, check why. User may need to
@@ -213,12 +223,12 @@ export default function SignInForm() {
                 </label>
                 <input
                   ref={emailRef}
-                  className="w-full !rounded text-[#151517] p-2"
+                  className="w-full !rounded text-[#151517] bg-white p-2"
                   id="email"
                   type="email"
                   name="email"
                   value={email}
-                  aria-describedby="emailnote"
+                  aria-describedby="emailnotes"
                   required
                   aria-invalid={errorsEmail ? 'false' : 'true'}
                   aria-errormessage="email-error"
@@ -228,7 +238,7 @@ export default function SignInForm() {
                 />
                 <div
                   id="layer1"
-                  className=" absolute w-[65px] h-[39px] lg:w-[80px] lg:h-[45px] bg-[url(/bread2.svg)] bg-cover bg-no-repeat bg-center  top-9 !m-0 left-0 lg:right-[103%] "
+                  className=" absolute w-[65px] h-[39px] lg:w-[83px] lg:h-[50px] bg-[url(/toast1.svg)] bg-cover bg-no-repeat bg-center  top-9 !m-0 left-0 lg:right-[103%] "
                 ></div>
                 <div
                   id="email-error"
@@ -273,12 +283,12 @@ export default function SignInForm() {
                 <input
                   ref={passdwordRef}
                   autoComplete="current-password"
-                  className="w-full rounded !text-[#151517]  p-2"
+                  className="w-full rounded !text-[#151517]  bg-white p-2"
                   id="password"
-                  type="password"
+                  type={!passwordEye ? 'password' : 'text'}
                   name="password"
                   value={password}
-                  aria-describedby="passwordnote"
+                  aria-describedby="passwordnotes"
                   required
                   aria-invalid={errorsPassword ? 'false' : 'true'}
                   aria-errormessage="password-error"
@@ -287,8 +297,21 @@ export default function SignInForm() {
                   onBlur={() => setPasswordFocus(false)}
                 />
                 <div
+                  onClick={() => {
+                    setPasswordEye(!passwordEye);
+                  }}
+                  className="w-[30px] h-[30px] absolute left-0 top-1/2"
+                >
+                  {!passwordEye ? (
+                    <EyeOff color="black" />
+                  ) : (
+                    <Eye color="black" />
+                  )}
+                </div>
+                <div
                   id="layer2"
-                  className="lg:w-[80px] lg:h-[29px] w-[67px] h-[24px] absolute bg-[url(/meat.svg)] bg-cover bg-no-repeat bg-center  top-12 !m-0 left-0 lg:right-[103%] "
+                  // 88 24
+                  className="lg:w-[88px] lg:h-[29px] w-[67px] h-[24px] absolute bg-[url(/cheeseTomato.svg)] bg-cover bg-no-repeat bg-center  top-12 !m-0 left-0 lg:right-[103%] "
                 ></div>
                 <div
                   id="password-error"
@@ -307,7 +330,7 @@ export default function SignInForm() {
                 </div>
               </div>
               <div className="enterAnimation flex z-[1] justify-center items-center relative w-full">
-                <div className="w-[68px] h-[30px] lg:w-[81px] lg:h-[36px] absolute bg-[url(/bread1.svg)] bg-cover bg-no-repeat bg-center  top-12 left-0 m-0 lg:!right-[103%]"></div>
+                <div className="w-[68px] h-[21px] lg:w-[85px] lg:h-[27px] absolute bg-[url(/toast2.svg)] bg-cover bg-no-repeat bg-center  top-12 left-0 m-0 lg:!right-[103%]"></div>
 
                 <button
                   type="submit"

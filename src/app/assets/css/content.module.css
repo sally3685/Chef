@@ -1,0 +1,21 @@
+@media (max-width: 425px) {
+  .card1,
+  .card2,
+  .card3 {
+    width: 90%;
+  }
+  .sec1 {
+    margin-top: 22px;
+  }
+}
+
+@media (max-width: 375px) {
+  .card1,
+  .card2,
+  .card3 {
+    width: 90%;
+  }
+  .sec1 {
+    margin-top: 35px;
+  }
+}

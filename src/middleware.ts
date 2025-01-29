@@ -7,10 +7,12 @@
 // };
 // middleware.ts
 import { chain } from './middelwares/chain';
-import { homeMiddleware } from './middelwares/homeMiddleware';
-// import { authMiddleware } from './middelwares/authMiddleware';
-export default chain([homeMiddleware]);
+import homeMiddleware from './middelwares/homeMiddleware';
+import authMiddleware from './middelwares/authMiddleware';
+import { clerkMiddleware } from '@clerk/nextjs/server';
+chain([authMiddleware, homeMiddleware]);
 
+export default clerkMiddleware();
 // console.log('any');
 export const config = {
   matcher: [

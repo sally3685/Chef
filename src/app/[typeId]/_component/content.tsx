@@ -5,9 +5,9 @@ import Menu from './Menu';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 import { useAnimation } from '@/helpers/useAnimation';
-import { useRef } from 'react';
-import { useGSAP } from '@gsap/react';
+import { useLayoutEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
+import styles from '@/app/assets/css/content.module.css';
 const food = [
   {
     id: '1',
@@ -30,35 +30,26 @@ const food = [
     vid: '/v3.mp4',
   },
 ];
-type Props = {
-  params: {
-    typeId: string;
-  };
-};
+
 export default function Home() {
   const cardRef2 = useRef<HTMLDivElement | null>(null);
   const cardRef3 = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const params = useParams();
-  const { typeId } = params;
-  let t;
-  if (typeId) {
-    t = typeId[0];
-  } else return null;
-  useGSAP(
-    () => {
+
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
       const highliter = document.querySelectorAll('.highliter');
       const herb1 = document.querySelectorAll('.herb1');
       const herb2 = document.querySelectorAll('.herb2');
       let mm = gsap.matchMedia();
 
-      mm.add('(max-width:1024px)', () => {
+      mm.add('(max-width:1023px)', () => {
         gsap.registerPlugin(ScrollTrigger);
         gsap.defaults({ ease: 'back.in', duration: 1 });
 
         const tl2 = gsap.timeline({
           scrollTrigger: {
-            trigger: containerRef.current,
+            trigger: '.gggh',
             start: 'top 10%',
             end: '+=300px',
             scrub: true,
@@ -69,7 +60,7 @@ export default function Home() {
           .fromTo(
             cardRef3.current,
             {
-              translateX: -400,
+              translateX: -5,
               opacity: 0,
             },
             {
@@ -81,7 +72,7 @@ export default function Home() {
           .fromTo(
             cardRef2.current,
             {
-              translateX: -400,
+              translateX: -5,
               opacity: 0,
             },
             {
@@ -120,38 +111,37 @@ export default function Home() {
           },
           '<'
         );
-    },
-    { scope: containerRef }
-  );
+    });
+    return () => ctx.revert();
+  });
 
-  //https://stackademic.com/blog/how-to-use-gsap-with-nextjs-14-and-ssr
-
-  if (isNaN(parseInt(t) - 1) || parseInt(t) - 1 >= food.length) {
-    notFound();
-  }
   return (
     <>
       <main className=" section-height w-full">
         <section
           ref={containerRef}
-          className=" relative max-w-7xl mx-auto section-height flex flex-col justify-evenly items-center "
+          className={`${styles.sec1} relative max-w-7xl mx-auto section-height flex flex-col justify-evenly items-center gggh`}
         >
-          <div className="space-y-6  w-full text-center px-4">
+          <div className={`space-y-6  w-full text-center px-4 `}>
             <div className="textup inline-block overflow-hidden ">
               <h1 className="sm:text-3xl text-2xl font-bold">
-                {food[parseInt(t) - 1].title}
+                {/* {food[parseInt(t) - 1].title} */}
+                أشهى الوصفات
               </h1>
             </div>
 
             <article className="space-y-2 dark:text-[#ffffffe7] text-[#111111] ">
-              <p className="sm:text-2xl text-xl textup1 inline-block overflow-hidden ">
+              <p className="sm:text-2xl text-xl textup1 inline-block overflow-hidden dark:text-[#ffffffe7] text-[#111111]">
                 من الآن فصاعدًا لا مزيد من الحيرة والجوع ..
               </p>
               <br />
-              <p className=" sm:text-2xl text-xl textup2 inline-block overflow-hidden ">
+              <p
+                style={{ lineHeight: 2 }}
+                className={` sm:text-2xl text-xl textup2 inline-block overflow-hidden `}
+              >
                 يقدم مطبخنا أشهى الأطباق بأحدث الوصفات{' '}
                 <span
-                  className="relative bg-gradient-to-l dark:from-[#a97345] dark:to-[#a97345] 
+                  className="relative bg-gradient-to-l dark:from-[#bc7f37] dark:to-[#bc7f37] 
                 from-[#f3a738] to-[#f3a738]
                 bg-no-repeat bg-[length:0%_100%]  bg-[right]  highliter"
                 >
@@ -160,12 +150,14 @@ export default function Home() {
               </p>
             </article>
           </div>
-          <div className="  relative  flex w-full h-1/2 justify-center items-center">
+          <div
+            className={`  relative  flex w-full h-1/2 justify-center items-center`}
+          >
             <div
               ref={cardRef3}
-              className="lg:!opacity-100 absolute lg:relative card w-[80%] md:w-[60%]  lg:!translate-x-0 lg:!translate-y-0  translate-y-1 bg-[#bc7f37] dark:bg-zinc-800 h-full lg:w-1/3 rounded-3xl lg:-ml-8 lg:!z-[-1] lg:transform-none transform lg:scale-[0.9] box1 overflow-hidden flex flex-col justify-evenly items-center dark:border dark:border-x-2 dark:border-y-2 border-[#bc7f37] "
+              className={`${styles.card1} lg:!opacity-100 absolute lg:relative card w-[80%] md:w-[60%]  lg:!translate-x-0 lg:!translate-y-0  translate-y-1 bg-[#bc7f37] dark:bg-[#ce8538] h-full lg:w-1/3 rounded-3xl lg:-ml-8 lg:!z-[-1] lg:transform-none transform lg:scale-[0.9] box1 overflow-hidden flex flex-col justify-evenly items-center dark:border dark:border-x-2 dark:border-y-2 border-[#bc7f37] `}
             >
-              <h2 className="sm:text-xl text-lg text-white text-center">
+              <h2 className="sm:text-xl text-lg text-[#151517] text-center">
                 أكثر الشيفات متابعة
               </h2>
               <Image
@@ -176,7 +168,7 @@ export default function Home() {
                 width="251"
                 height="543"
               ></Image>
-              <h2 className="sm:text-xl text-lg text-white text-center p-3">
+              <h2 className="sm:text-xl text-lg text-[#151517] text-center p-3">
                 الشيف{' '}
                 <span className="text-black dark:text-green-500 font-bold ">
                   حمودة البطل{' '}
@@ -189,11 +181,12 @@ export default function Home() {
             </div>
             <div
               ref={cardRef2}
-              className="absolute  card w-[80%] md:w-[60%]  lg:!translate-x-0 lg:!opacity-100 translate-y-4 lg:!translate-y-0  lg:dark:bg-[#eea2437b] bg-[#c7e198] dark:bg-[#97662a] dark:border dark:border-[#f3e37c] dark:border-y-2 dark:border-x-2 h-full lg:w-1/3 rounded-3xl lg:relative flex justify-center items-center flex-col text-center box2 transform lg:transform-none"
+              className={`absolute  card w-[80%] md:w-[60%]  lg:!translate-x-0 lg:!opacity-100 translate-y-4 lg:!translate-y-0  h-full lg:w-1/3 rounded-3xl lg:relative flex justify-center items-center flex-col text-center box2 transform lg:transform-none bg-[#b25518] text-white ${styles.card2}`}
             >
-              <h2 className="sm:text-2xl text-xl font-bold px-12">
+              {/* <div className="bg-[url(/ss.png)] bg-no-repeat bg-cover bg-center absolute w-[106%] h-[119%] z-[-1]"></div> */}
+              <h2 className="font-bold px-12 sm:text-xl text-lg">
                 أكثر من مئة وصفة وأكثر من عشرين شيف محترف ماذا تنتظر <br />
-                <span className="hover:text-[#63f91eaf] transition-all duration-600 hover:cursor-pointer">
+                <span className="hover:text-[#f9751eaf] transition-all duration-600 hover:cursor-pointer">
                   انضم الينا الآن
                 </span>
               </h2>
@@ -212,8 +205,10 @@ export default function Home() {
                 height="258"
               ></Image>
             </div>
-            <div className="absolute lg:relative card w-[80%] md:w-[60%]  lg:!translate-x-0 lg:!translate-y-0 translate-y-7   text-center bg-[#bc7f37] dark:bg-zinc-800 h-full lg:w-1/3 rounded-3xl lg:-mr-8 lg:!z-[-1] box1 lg:transform-none transform lg:scale-[0.9] overflow-hidden flex flex-col justify-evenly items-center  dark:border dark:border-x-2 dark:border-y-2 border-[#bc7f37] ">
-              <h2 className="sm:text-xl text-lg text-white">
+            <div
+              className={`absolute lg:relative card w-[80%] md:w-[60%]  lg:!translate-x-0 lg:!translate-y-0 translate-y-7   text-center bg-[#bc7f37] dark:bg-[#d3b577] h-full lg:w-1/3 rounded-3xl lg:-mr-8 lg:!z-[-1] box1 lg:transform-none transform lg:scale-[0.9] overflow-hidden flex flex-col justify-evenly items-center  dark:border dark:border-x-2 dark:border-y-2 border-[#bc7f37]  ${styles.card3}`}
+            >
+              <h2 className="sm:text-xl text-lg text-[#151517]">
                 أعلى الوصفات تقييمًا
               </h2>
               <Image
@@ -232,7 +227,7 @@ export default function Home() {
                 width="251"
                 height="543"
               ></Image>
-              <h2 className="sm:text-xl text-lg text-white">
+              <h2 className="sm:text-xl text-lg text-[#151517]">
                 توست الخضار بتقييم{' '}
                 <span className="text-black dark:text-green-500 font-bold ">
                   80%

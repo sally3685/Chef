@@ -4,7 +4,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 
 import { CircleCheck, CirclePlus, Eye, EyeOff } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useEffect } from 'react';
 import { ClerkAPIError } from '@clerk/types';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
@@ -47,104 +47,117 @@ export default function ForgotPasswordPage() {
     })
   );
 
-  const layer1 = document.getElementById('layer1');
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const layer1 = document.getElementById('layer1');
 
-  const layer3 = document.getElementById('layer3');
-  const layer4 = document.getElementById('layer4');
-  useEffect(() => {
-    let value;
-    if (EMAIL_REGEX.test(email) && !errorsEmail) {
-      value = '7rem';
-      if (PWD_REGEX.test(password) && !errorsPassword) {
-        value = '13rem';
-        // if (PWD_REGEX.test(password) && !errorsPassword) {
-        //   value = '18.2rem';
-        // }
+      let value;
+      if (EMAIL_REGEX.test(email) && !errorsEmail) {
+        value = '8.9rem';
+        if (PWD_REGEX.test(password) && !errorsPassword) {
+          value = '13rem';
+          // if (PWD_REGEX.test(password) && !errorsPassword) {
+          //   value = '18.2rem';
+          // }
+        }
+      } else {
+        if (!EMAIL_REGEX.test(email) || errorsEmail) {
+          value = '2.25rem';
+        } else {
+          value = '8.9rem';
+        }
       }
-    } else {
-      value = '2.25rem';
-    }
-    tl.current = gsap
-      .timeline({
-        defaults: {
-          duration: 1.5,
-          ease: 'bounce',
-        },
-      })
-      .to(layer1, {
-        top: value,
-      });
-    setValidEmail(EMAIL_REGEX.test(email));
+      tl.current = gsap
+        .timeline({
+          defaults: {
+            duration: 1.5,
+            ease: 'bounce',
+          },
+        })
+        .to(layer1, {
+          top: value,
+        });
+      setValidEmail(EMAIL_REGEX.test(email));
+    });
+    return () => ctx.revert();
   }, [email, errorsEmail]);
 
-  useEffect(() => {
-    let value;
-    if (PWD_REGEX.test(password) && !errorsPassword) {
-      value = '7rem';
-      if (CODE_REGEX.test(code) && !errorsCode) {
-        value = '12.65rem';
-        // if (PWD_REGEX.test(password) && !errorsPassword) {
-        //   value = '18.2rem';
-        // }
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const layer3 = document.getElementById('layer3');
+      let value;
+      if (PWD_REGEX.test(password) && !errorsPassword) {
+        value = '7rem';
+        if (CODE_REGEX.test(code) && !errorsCode) {
+          value = '14.65rem';
+          // if (PWD_REGEX.test(password) && !errorsPassword) {
+          //   value = '18.2rem';
+          // }
+        }
+      } else {
+        value = '2.25rem';
       }
-    } else {
-      value = '2.25rem';
-    }
-    tl.current = gsap
-      .timeline({
-        defaults: {
-          duration: 1.5,
-          ease: 'bounce',
-        },
-      })
-      .to(layer3, {
-        top: value,
-      });
-    setValidPwd(PWD_REGEX.test(password));
+      tl.current = gsap
+        .timeline({
+          defaults: {
+            duration: 1.5,
+            ease: 'bounce',
+          },
+        })
+        .to(layer3, {
+          top: value,
+        });
+      setValidPwd(PWD_REGEX.test(password));
+    });
+    return () => ctx.revert();
   }, [password, errorsPassword]);
+  useLayoutEffect(() => {
+    const layer3 = document.getElementById('layer3');
+    const layer4 = document.getElementById('layer4');
+    let ctx = gsap.context(() => {
+      setValidCode(CODE_REGEX.test(code));
+      let valueE;
+      let valueU;
+      if (CODE_REGEX.test(code) && !errorsCode) {
+        valueE = '8.55rem';
+        valueU = '12.65rem';
 
-  useEffect(() => {
-    setValidCode(CODE_REGEX.test(code));
-    let valueE;
-    let valueU;
-    if (CODE_REGEX.test(code) && !errorsCode) {
-      valueE = '8.55rem';
-      valueU = '12.65rem';
+        // if (PWD_REGEX.test(password) && !errorsPassword) {
+        //   valueE = '14rem';
+        //   valueU = '18.2rem';
+        // }
+        if (!PWD_REGEX.test(password) || errorsPassword) {
+          valueU = '2.25rem';
+        }
+      } else {
+        valueE = '3rem';
+        valueU = '7rem';
 
-      // if (PWD_REGEX.test(password) && !errorsPassword) {
-      //   valueE = '14rem';
-      //   valueU = '18.2rem';
-      // }
-      if (!PWD_REGEX.test(password) || errorsPassword) {
-        valueU = '2.25rem';
+        if (!PWD_REGEX.test(password) || errorsPassword) {
+          valueU = '2.25rem';
+        }
       }
-    } else {
-      valueE = '3rem';
-      valueU = '7rem';
+      tl.current = gsap
+        .timeline({
+          defaults: {
+            duration: 1.5,
+            ease: 'bounce',
+          },
+        })
+        .to(layer3, {
+          top: valueU,
 
-      if (!PWD_REGEX.test(password) || errorsPassword) {
-        valueU = '2.25rem';
-      }
-    }
-    tl.current = gsap
-      .timeline({
-        defaults: {
-          duration: 1.5,
-          ease: 'bounce',
-        },
-      })
-      .to(layer3, {
-        top: valueU,
-
-        delay: 0.02,
-      })
-      .to(
-        layer4,
-        {
-          top: valueE,
-        },
-        '='
-      );
+          delay: 0.02,
+        })
+        .to(
+          layer4,
+          {
+            top: valueE,
+          },
+          '='
+        );
+    });
+    return () => ctx.revert();
   }, [code, errorsCode]);
 
   const { isSignedIn } = useAuth();
@@ -310,7 +323,7 @@ export default function ForgotPasswordPage() {
                 </label>
                 <input
                   ref={emailRef}
-                  className="w-full !rounded text-[#151517] p-2"
+                  className="w-full !rounded text-[#151517] p-2 bg-white"
                   id="email"
                   type="email"
                   name="email"
@@ -325,7 +338,7 @@ export default function ForgotPasswordPage() {
                 />
                 <div
                   id="layer1"
-                  className=" absolute w-[65px] h-[39px] lg:w-[80px] lg:h-[45px] bg-[url(/bread2.svg)] bg-cover bg-no-repeat bg-center  top-9 !m-0 left-0 lg:right-[103%] "
+                  className=" absolute w-[80px] h-[30px] lg:w-[93px] lg:h-[34px] bg-[url(/salmon.svg)] bg-cover bg-no-repeat bg-center  top-9 !m-0 left-0 lg:right-[103%] "
                 ></div>
                 <div
                   id="email-error"
@@ -343,8 +356,8 @@ export default function ForgotPasswordPage() {
                   )}
                 </div>
               </div>
-              <div className="enterAnimation flex z-[1] justify-center items-center relative w-full">
-                <div className="w-[68px] h-[30px] lg:w-[81px] lg:h-[36px] absolute bg-[url(/bread1.svg)] bg-cover bg-no-repeat bg-center  top-12 left-0 m-0 lg:!right-[103%]"></div>
+              <div className="enterAnimation flex z-[1] justify-center items-center relative w-full top-[40px]">
+                <div className="w-[81px] h-[30px] lg:w-[93px] lg:h-[35px] absolute bg-[url(/toastL.svg)] bg-cover bg-no-repeat bg-center  top-[1rem] left-0 m-0 lg:!right-[103%]"></div>
                 <button
                   type="submit"
                   disabled={submit ? true : false}
@@ -386,7 +399,7 @@ export default function ForgotPasswordPage() {
                 <input
                   ref={passdwordRef}
                   autoComplete="current-password"
-                  className="w-full rounded !text-[#151517]  p-2"
+                  className="w-full rounded !text-[#151517]  p-2 bg-white"
                   id="password"
                   type="password"
                   name="password"
@@ -401,7 +414,7 @@ export default function ForgotPasswordPage() {
                 />
                 <div
                   id="layer3"
-                  className=" absolute w-[65px] h-[39px] lg:w-[80px] lg:h-[45px] bg-[url(/bread2.svg)] bg-cover bg-no-repeat bg-center  top-9 !m-0 left-0 lg:right-[103%] "
+                  className=" absolute w-[65px] h-[39px] lg:w-[87px] lg:h-[50px] bg-[url(/toast1.svg)] bg-cover bg-no-repeat bg-center  top-9 !m-0 left-0 lg:right-[103%] "
                 ></div>
                 <div
                   id="password-error"
@@ -446,7 +459,7 @@ export default function ForgotPasswordPage() {
                 <input
                   ref={codeRef}
                   autoComplete="new-code"
-                  className="w-full rounded !text-[#151517]  p-2"
+                  className="w-full rounded !text-[#151517]  p-2 bg-white"
                   id="code"
                   type="code"
                   name="code"
@@ -461,7 +474,7 @@ export default function ForgotPasswordPage() {
                 />
                 <div
                   id="layer4"
-                  className="lg:w-[80px] lg:h-[29px] w-[67px] h-[24px] absolute bg-[url(/meat.svg)] bg-cover bg-no-repeat bg-center  top-12 !m-0 left-0 lg:right-[103%] "
+                  className="lg:w-[90px] lg:h-[33px] w-[67px] h-[24px] absolute bg-[url(/salmon.svg)] bg-cover bg-no-repeat bg-center  top-12 !m-0 left-0 lg:right-[103%] "
                 ></div>
                 <div
                   id="code-error"
@@ -479,8 +492,8 @@ export default function ForgotPasswordPage() {
                   )}
                 </div>
               </div>
-              <div className="enterAnimation flex z-[1] justify-center items-center relative w-full">
-                <div className="w-[68px] h-[30px] lg:w-[81px] lg:h-[36px] absolute bg-[url(/bread1.svg)] bg-cover bg-no-repeat bg-center  top-12 left-0 m-0 lg:!right-[103%]"></div>
+              <div className="enterAnimation flex z-[1] justify-center items-center relative w-full top-[36px]">
+                <div className="w-[73px] h-[27px] lg:w-[87px] lg:h-[33px] top-[14px] absolute bg-[url(/toastL.svg)] bg-cover bg-no-repeat bg-center  left-0 m-0 lg:!right-[103%]"></div>
                 <button
                   type="submit"
                   disabled={submit ? true : false}

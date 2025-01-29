@@ -1,17 +1,20 @@
-import { Metadata } from 'next';
-import itemsArray from './items';
-type Props = {
-  params: {
-    typeId: string;
-    recipyId: string;
-  };
-};
-export const generateMetadata = async ({ params }: Props) => {
-  const { recipyId } = await params;
+export const generateMetadata = async ({
+  typeId,
+  recipyId,
+  children,
+}: {
+  typeId: string | undefined;
+  recipyId: string | undefined;
+  children: React.ReactNode;
+}) => {
+  const recipyIdawaited = await recipyId;
+  const slug = decodeURIComponent(recipyIdawaited as string);
+  let url = slug.replaceAll('-', ' ');
+  url = url.replace(/[0-9]/g, '');
   return {
-    title: `${itemsArray[parseInt(recipyId) - 1].title}`,
+    title: `${url}`,
   };
 };
-export default async function Meta({ params }: Props) {
+export default async function Meta() {
   return <></>;
 }

@@ -12,7 +12,7 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { ClerkAPIError } from '@clerk/types';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
 import { useEffect } from 'react';
@@ -29,6 +29,7 @@ export default function Page() {
   const { isLoaded, signUp } = useSignUp();
   const [emailAddress, setEmailAddress] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [passwordEye, setPasswordEye] = React.useState(false);
   const [username, setUsername] = React.useState('');
   const [submit, setsubmit] = React.useState(false);
   const [verifying, setVerifying] = React.useState(false);
@@ -55,136 +56,149 @@ export default function Page() {
       paused: true,
     })
   );
-  const layer1 = document.getElementById('layer1');
-  const layer2 = document.getElementById('layer2');
-  const layer3 = document.getElementById('layer3');
-
-  useEffect(() => {
-    let value;
-    if (USER_REGEX.test(username) && !errorsUsername) {
-      value = '7rem';
-      if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
-        value = '12.65rem';
-        if (PWD_REGEX.test(password) && !errorsPassword) {
-          value = '18.2rem';
+  React.useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const layer1 = document.getElementById('layer1');
+      let value;
+      if (USER_REGEX.test(username) && !errorsUsername) {
+        value = '7rem';
+        if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
+          value = '12.65rem';
+          if (PWD_REGEX.test(password) && !errorsPassword) {
+            value = '18.2rem';
+          }
         }
+      } else {
+        value = '2.25rem';
       }
-    } else {
-      value = '2.25rem';
-    }
-    tl.current = gsap
-      .timeline({
-        defaults: {
-          duration: 1.5,
-          ease: 'bounce',
-        },
-      })
-      .to(layer1, {
-        top: value,
-      });
-    setValidName(USER_REGEX.test(username));
+      tl.current = gsap
+        .timeline({
+          defaults: {
+            duration: 1.5,
+            ease: 'bounce',
+          },
+        })
+        .to(layer1, {
+          top: value,
+        });
+      setValidName(USER_REGEX.test(username));
+    });
+    return () => ctx.revert();
   }, [username, errorsUsername]);
-  useEffect(() => {
-    setValidPwd(PWD_REGEX.test(password));
-    let valueE;
-    let valueU;
-    let valueP;
-    if (PWD_REGEX.test(password) && !errorsPassword) {
-      valueE = '14rem';
-      valueU = '18.2rem';
-      valueP = '8.5rem';
-
-      if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
-        valueE = '3rem';
-        if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
-        else valueU = '7rem';
-      } else {
-        if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
-      }
-    } else {
-      valueE = '8.55rem';
-      valueU = '12.65rem';
-      valueP = '3rem';
-
-      if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
-        valueE = '3rem';
-        if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
-        else valueU = '7rem';
-      } else {
-        if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
-      }
-    }
-    tl.current = gsap
-      .timeline({
-        defaults: {
-          duration: 1.5,
-          ease: 'bounce',
-        },
-      })
-      .to(layer1, {
-        top: valueU,
-        delay: 0.02,
-      })
-      .to(
-        layer2,
-        {
-          top: valueE,
-
-          delay: 0.04,
-        },
-        '='
-      )
-      .to(
-        layer3,
-        {
-          top: valueP,
-        },
-        '='
-      );
-  }, [password, errorsPassword]);
-  useEffect(() => {
-    setValidEmail(EMAIL_REGEX.test(emailAddress));
-    let valueE;
-    let valueU;
-    if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
-      valueE = '8.55rem';
-      valueU = '12.65rem';
-
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const layer1 = document.getElementById('layer1');
+      const layer2 = document.getElementById('layer2');
+      const layer3 = document.getElementById('layer3');
+      setValidPwd(PWD_REGEX.test(password));
+      let valueE;
+      let valueU;
+      let valueP;
       if (PWD_REGEX.test(password) && !errorsPassword) {
         valueE = '14rem';
         valueU = '18.2rem';
-      }
-      if (!USER_REGEX.test(username) || errorsUsername) {
-        valueU = '2.25rem';
-      }
-    } else {
-      valueE = '3rem';
-      valueU = '7rem';
+        valueP = '8.5rem';
 
-      if (!USER_REGEX.test(username) || errorsUsername) {
-        valueU = '2.25rem';
-      }
-    }
-    tl.current = gsap
-      .timeline({
-        defaults: {
-          duration: 1.5,
-          ease: 'bounce',
-        },
-      })
-      .to(layer1, {
-        top: valueU,
+        if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
+          valueE = '3rem';
+          if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
+          else valueU = '7rem';
+        } else {
+          if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
+        }
+      } else {
+        valueE = '8.55rem';
+        valueU = '12.65rem';
+        valueP = '3rem';
 
-        delay: 0.02,
-      })
-      .to(
-        layer2,
-        {
-          top: valueE,
-        },
-        '='
-      );
+        if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
+          valueE = '3rem';
+          if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
+          else valueU = '7rem';
+        } else {
+          if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
+        }
+      }
+      tl.current = gsap
+        .timeline({
+          defaults: {
+            duration: 1.5,
+            ease: 'bounce',
+          },
+        })
+        .to(layer1, {
+          top: valueU,
+          delay: 0.02,
+        })
+        .to(
+          layer2,
+          {
+            top: valueE,
+
+            delay: 0.04,
+          },
+          '='
+        )
+        .to(
+          layer3,
+          {
+            top: valueP,
+          },
+          '='
+        );
+    });
+    return () => ctx.revert();
+  }, [password, errorsPassword]);
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const layer1 = document.getElementById('layer1');
+      const layer2 = document.getElementById('layer2');
+      const layer3 = document.getElementById('layer3');
+      setValidEmail(EMAIL_REGEX.test(emailAddress));
+      let valueE;
+      let valueU;
+      if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
+        valueE = '8.55rem';
+        valueU = '12.65rem';
+
+        if (PWD_REGEX.test(password) && !errorsPassword) {
+          valueE = '14rem';
+          valueU = '18.2rem';
+        }
+        if (!USER_REGEX.test(username) || errorsUsername) {
+          valueU = '2.25rem';
+        }
+      } else {
+        valueE = '3rem';
+        valueU = '7rem';
+
+        if (!USER_REGEX.test(username) || errorsUsername) {
+          valueU = '2.25rem';
+        }
+      }
+      tl.current = gsap
+        .timeline({
+          defaults: {
+            duration: 1.5,
+            ease: 'bounce',
+          },
+        })
+        .to(layer1, {
+          top: valueU,
+
+          delay: 0.02,
+        })
+        .to(
+          layer2,
+          {
+            top: valueE,
+          },
+          '='
+        );
+    });
+    return () => ctx.revert();
   }, [emailAddress, errorsEmail]);
+
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };
@@ -308,7 +322,7 @@ export default function Page() {
                 <input
                   autoComplete="off"
                   placeholder="john doe"
-                  className=" w-full rounded p-2 text-[#151517]"
+                  className=" w-full rounded p-2  bg-white text-[#151517]"
                   id="username"
                   type="text"
                   name="username"
@@ -376,7 +390,7 @@ export default function Page() {
                 </label>
                 <input
                   ref={emailRef}
-                  className="w-full !rounded text-[#151517] p-2"
+                  className="w-full !rounded  bg-white text-[#151517] p-2"
                   id="email"
                   type="email"
                   name="email"
@@ -439,9 +453,9 @@ export default function Page() {
                 <input
                   ref={passdwordRef}
                   autoComplete="new-password"
-                  className="w-full rounded !text-[#151517]  p-2"
+                  className="w-full rounded !text-[#151517]  bg-white p-2"
                   id="password"
-                  type="password"
+                  type={!passwordEye ? 'password' : 'text'}
                   name="password"
                   value={password}
                   aria-describedby="passwordnote"
@@ -452,6 +466,18 @@ export default function Page() {
                   onFocus={() => setPasswordFocus(true)}
                   onBlur={() => setPasswordFocus(false)}
                 />
+                <div
+                  onClick={() => {
+                    setPasswordEye(!passwordEye);
+                  }}
+                  className="w-[30px] h-[30px] absolute left-0 top-1/2"
+                >
+                  {!passwordEye ? (
+                    <EyeOff color="black" />
+                  ) : (
+                    <Eye color="black" />
+                  )}
+                </div>
                 <div
                   id="layer3"
                   className="lg:w-[80px] lg:h-[29px] w-[67px] h-[24px] absolute bg-[url(/meat.svg)] bg-cover bg-no-repeat bg-center  top-12 !m-0 left-0 lg:right-[103%] "

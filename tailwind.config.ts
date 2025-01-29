@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
 
-export default {
+import { withUt } from 'uploadthing/tw';
+const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -17,3 +18,4 @@ export default {
   plugins: [],
   darkMode: 'class',
 } satisfies Config;
+export default withUt(config);

@@ -1,0 +1,23 @@
+@media (max-width: 320px) {
+  .cardDiv {
+    transform: scale(0.87);
+    left: 6%;
+  }
+}
+@media (max-width: 425px) {
+  .cardTT {
+    opacity: 40%;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .cardTDiv {
+    width: 95%;
+  }
+}
+@media (min-width: 1440px) {
+  .cardTDiv {
+    width: 60%;
+  }
+}

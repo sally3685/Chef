@@ -10,8 +10,10 @@ import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
 
 import { CircleCheck, CirclePlus, Eye, EyeOff } from 'lucide-react';
 
+import { postUser } from '@/data-access/users';
 const CODE_REGEX = /^[0-9]{6}$/;
 import gsap from 'gsap';
+import { serverUser } from '@/actions/user';
 const verifyEmail = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
 
@@ -24,7 +26,6 @@ const verifyEmail = () => {
   const [code, setCode] = useState('');
   const router = useRouter();
 
-  const layer1 = document.getElementById('layer1');
   useEffect(() => {
     codeRef?.current?.focus();
     // passdwordRef?.current?.focus();
@@ -34,24 +35,28 @@ const verifyEmail = () => {
       paused: true,
     })
   );
-  useEffect(() => {
-    let value;
-    if (CODE_REGEX.test(code) && !errorsCode) {
-      value = '7rem';
-    } else {
-      value = '2.25rem';
-    }
-    tl.current = gsap
-      .timeline({
-        defaults: {
-          duration: 1.5,
-          ease: 'bounce',
-        },
-      })
-      .to(layer1, {
-        top: value,
-      });
-    setValidCode(CODE_REGEX.test(code));
+  React.useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const layer1 = document.getElementById('layer1');
+      let value;
+      if (CODE_REGEX.test(code) && !errorsCode) {
+        value = '8.5rem';
+      } else {
+        value = '2.25rem';
+      }
+      tl.current = gsap
+        .timeline({
+          defaults: {
+            duration: 1.5,
+            ease: 'bounce',
+          },
+        })
+        .to(layer1, {
+          top: value,
+        });
+      setValidCode(CODE_REGEX.test(code));
+    });
+    return () => ctx.revert();
   }, [code, errorsCode]);
 
   const handleVerify = async (e: React.FormEvent) => {
@@ -71,7 +76,17 @@ const verifyEmail = () => {
       // and redirect the user
       if (signUpAttempt.status === 'complete') {
         await setActive({ session: signUpAttempt.createdSessionId });
-        router.push('/');
+        console.log('aaaaaaa', signUpAttempt, signUpAttempt.createdUserId);
+        try {
+          const a = await serverUser(
+            signUpAttempt?.createdUserId!,
+            signUpAttempt?.username!
+          );
+          console.log(a);
+          router.push('/');
+        } catch (error) {
+          throw new Error('something went wrong');
+        }
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
@@ -143,7 +158,7 @@ const verifyEmail = () => {
               </label>
               <input
                 ref={codeRef}
-                className="w-full !rounded text-[#151517] p-2"
+                className="w-full !rounded bg-white text-[#151517] p-2"
                 id="code"
                 type="code"
                 name="code"
@@ -158,7 +173,7 @@ const verifyEmail = () => {
               />
               <div
                 id="layer1"
-                className=" absolute w-[65px] h-[39px] lg:w-[80px] lg:h-[45px] bg-[url(/bread2.svg)] bg-cover bg-no-repeat bg-center  top-9 !m-0 left-0 lg:right-[103%] "
+                className=" absolute w-[79px] h-[28px] lg:w-[90px] lg:h-[28px] bg-[url(/cucumber.svg)] bg-cover bg-no-repeat bg-center  top-9 !m-0 left-0 lg:right-[103%] "
               ></div>
               <div
                 id="code-error"
@@ -175,7 +190,7 @@ const verifyEmail = () => {
               </div>
             </div>
             <div className="enterAnimation flex z-[1] justify-center items-center relative w-full">
-              <div className="w-[68px] h-[30px] lg:w-[81px] lg:h-[36px] absolute bg-[url(/bread1.svg)] bg-cover bg-no-repeat bg-center  top-12 left-0 m-0 lg:!right-[103%]"></div>
+              <div className="w-[84px] h-[30px] lg:w-[104px] lg:h-[36px] absolute bg-[url(/mayo.svg)] bg-cover bg-no-repeat bg-center  top-12 left-0 m-0 lg:!right-[103%]"></div>
               <button type="submit" className="w-1/2 rounded p-2 bg-orange-400">
                 تاكيد
               </button>

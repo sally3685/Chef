@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model GlobalVariable {
+  id       String      @id @default(auto()) @map("_id") @db.ObjectId
+  value    Int    @default(1)
+}
+
+
+type Comment {
+  text    String
+  date    DateTime  @default(now())     
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+  clerkId           String      @unique
+  userName String
+  role    Role     @default(USER)
+  recipies Recipe[]
+  rating User_Recipe[]
+}
+
+model Recipe {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  slug String @unique
+  title           String
+  classification  String
+  additional      String?
+  src             String
+  steps           String[]
+  service         Int?
+  decorePhoto     String     @default("mint1")
+  type            String
+  color           String     @default("#80551bd6")
+  timeForCooking  TimeForCooking?
+  ingredients     Ingredients[]
+  rate            Float          @default(0)
+  author      User       @relation(fields: [authorId], references: [clerkId])
+  authorId    String    
+  ratings         User_Recipe[]
+}
+model User_Recipe {
+  id     String    @id @default(auto()) @map("_id") @db.ObjectId
+  rating     Int 
+  recipe     Recipe   @relation(fields: [recipeId], references: [id],onDelete:Cascade)
+  recipeId   String @db.ObjectId
+  user       User       @relation(fields: [userId], references: [clerkId],onDelete:Cascade)
+  userId     String
+  customId String @unique
+  comments Comment[]
+}
+
+type TimeForCooking {
+  time  Int
+  unit  String @default("دقيقة")
+}
+
+type Ingredients {
+  name              String
+  additional         String?
+  src               String?
+  amount            MacroAmount 
+  calory            Int?
+  totalFat          MacroAmount
+  cholesterol       MacroAmount 
+  sodium            MacroAmount 
+  totalCarbohydrates MacroAmount 
+  protein           MacroAmount 
+  vitaminD          MacroAmount 
+  calcium           MacroAmount 
+  iron              MacroAmount
+  potassium         MacroAmount 
+  caffeine          MacroAmount 
+  
+}
+
+type MacroAmount {
+  number  Int?
+  unit    String?
+}

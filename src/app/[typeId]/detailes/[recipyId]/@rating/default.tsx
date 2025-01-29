@@ -1,152 +1,251 @@
 'use client';
 
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { useState } from 'react';
-export default function Rating() {
-  const [ratio, setRatio] = useState(['1', '1', '', '', '']);
+import { getOneRecipy } from '@/data-access/recipies';
 
-  const handleClick = (index: number) => {
-    const newRatio = ratio.map((_, i) => (i <= index ? '1' : ''));
-    setRatio(newRatio);
+import { useUser } from '@clerk/nextjs';
+import { Ingredients, TimeForCooking } from '@prisma/client';
+import gsap from 'gsap';
+import { useParams } from 'next/navigation';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { GetRecipeRate, GetUserRate, PostUserRate } from '@/data-access/rating';
+export default function Rating() {
+  const params = useParams();
+  const { recipyId } = params;
+
+  type reci = {
+    id: string;
+    title: string;
+    slug: string;
+    additional: string | null;
+    src: string;
+    steps: string[];
+    service: number | null;
+    decorePhoto: string;
+    type: string;
+    color: string;
+    rate: number;
+    classification: string;
+    authorId: string;
+    timeForCooking: TimeForCooking | null;
+    ingredients: Ingredients[];
   };
-  useGSAP(() => {
-    const animateSections = () => {
-      gsap.defaults({ ease: 'back.in', duration: 1.5 });
-      const tl = gsap.timeline();
-      tl.to('.c1', {
-        cx: '10',
-        cy: '10',
-        transformOrigin: '50% 50%',
-      })
-        .to(
-          '.c2',
-          {
-            cx: '37',
-            cy: '10',
-            transformOrigin: '50% 50%',
-          },
-          '<'
-        )
-        .to(
-          '.c3',
-          {
-            cx: '5',
-            cy: '32',
-            transformOrigin: '50% 50%',
-          },
-          '<'
-        )
-        .to(
-          '.c4',
-          {
-            cx: '43',
-            cy: '32',
-            transformOrigin: '50% 50%',
-          },
-          '<'
-        )
-        .to(
-          '.c5',
-          {
-            cx: '25',
-            cy: '46',
-            transformOrigin: '50% 50%',
-          },
-          '<'
-        )
-        .fromTo(
-          '.svg',
-          {
-            rotate: 0,
-            transformOrigin: '50% 50%',
-          },
-          {
-            rotate: 360,
-            transformOrigin: '50% 50%',
-          },
-          '+=0.1'
-        )
-        .to(
-          '.smile',
-          {
-            attr: {
-              fill: 'black',
-            },
-            duration: 0.1,
-          },
-          '<'
-        )
-        .to('.c', {
-          cx: '25',
-          cy: '25',
+  const [recipe, setRecipe] = useState<reci>();
+  const { user, isLoaded } = useUser();
+  const slug = decodeURIComponent(recipyId as string);
+  let url = slug.replaceAll('-', ' ');
+  url = url.replace(/[0-9]/g, '');
+
+  const [currentuserrate, setcurrentuserrate] = useState<{
+    rating: number;
+  } | null>();
+  const [refresh, setRefresh] = useState(false);
+  const [error, setError] = useState<null | string>(null);
+  const [isFetchLoad, setFetchLoad] = useState(false);
+  useEffect(() => {
+    // setItemsArray([]);
+    const fetchData = async () => {
+      setFetchLoad(true);
+      const slug1 = decodeURIComponent(recipyId as string);
+      const a = await getOneRecipy(slug1);
+      if (a.status === 500) setError(a.message as string);
+      else setRecipe(a.recipy as reci);
+      setFetchLoad(false);
+      // setItemsArray(a);
+    };
+
+    fetchData();
+    setError(null);
+  }, [refresh]);
+  const [ratio, setRatio] = useState(['', '', '', '', '']);
+  const [reciperate, setreciperate] = useState<number>();
+
+  const handleClick = async (index: number) => {
+    const newRatio = ratio.map((_, i) => (i <= index ? '1' : ''));
+
+    const res = await PostUserRate(
+      user?.id as string,
+      recipe?.id as string,
+      index
+    );
+    if (res.status === 500) setError(res.message);
+    const rate = await GetRecipeRate(user?.id as string, recipe?.id as string);
+    if (res.status === 500) setError(res.message);
+    else {
+      setreciperate(rate.averageRating);
+      setRatio(newRatio);
+    }
+  };
+
+  useEffect(() => {
+    try {
+      const fetchData = async () => {
+        if (user && recipe) {
+          const s = await GetUserRate(user.id as string, recipe.id as string);
+          if (s.status === 200) setcurrentuserrate(s?.res);
+          else setError(s.message as string);
+          const rate = await GetRecipeRate(
+            user.id as string,
+            recipe.id as string
+          );
+          if (rate.status === 200) setreciperate(rate.averageRating);
+          else setError(s.message as string);
+        }
+      };
+      fetchData();
+    } catch (error) {
+    } finally {
+    }
+  }, [recipe, isLoaded]);
+  useEffect(() => {
+    if (currentuserrate) {
+      const newRatio = ratio.map((_, i) =>
+        i <= currentuserrate.rating ? '1' : ''
+      );
+      setRatio(newRatio);
+    }
+  }, [currentuserrate]);
+
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const animateSections = () => {
+        gsap.defaults({ ease: 'back.in', duration: 1.5 });
+        const tl = gsap.timeline();
+        tl.to('.c1', {
+          cx: '10',
+          cy: '10',
           transformOrigin: '50% 50%',
         })
-        .to(
-          '.smile',
-          {
-            attr: {
-              fill: 'none',
+          .to(
+            '.c2',
+            {
+              cx: '37',
+              cy: '10',
+              transformOrigin: '50% 50%',
             },
-            duration: 0.1,
-          },
-          '<'
-        );
-    };
-    const animateLids = () => {
-      const tl2 = gsap.timeline();
-      tl2
-        .fromTo(
-          ['.lid1', '.lid2'],
-          {
-            attr: {
-              y1: '18.5',
-              y2: '18.5',
+            '<'
+          )
+          .to(
+            '.c3',
+            {
+              cx: '5',
+              cy: '32',
+              transformOrigin: '50% 50%',
             },
-          },
-          {
-            attr: {
-              y1: '17',
-              y2: '17',
+            '<'
+          )
+          .to(
+            '.c4',
+            {
+              cx: '43',
+              cy: '32',
+              transformOrigin: '50% 50%',
             },
-            repeat: -1,
-            repeatDelay: 5,
-            duration: 0.5,
-          }
-        )
-        .fromTo(
-          ['.lid11', '.lid22'],
-          {
-            attr: {
-              y1: '21',
-              y2: '21',
+            '<'
+          )
+          .to(
+            '.c5',
+            {
+              cx: '25',
+              cy: '46',
+              transformOrigin: '50% 50%',
             },
-          },
-          {
-            attr: {
-              y1: '23',
-              y2: '23',
+            '<'
+          )
+          .fromTo(
+            '.svg',
+            {
+              rotate: 0,
+              transformOrigin: '50% 50%',
             },
-            repeat: -1,
-            repeatDelay: 5,
-            duration: 0.5,
-          },
-          '<'
-        );
-    };
-    const resetAnimations = () => {
-      gsap.to('.c, .smile', {
-        clearProps: 'all',
-      });
-    };
-    resetAnimations();
-    animateSections();
-    animateLids();
+            {
+              rotate: 360,
+              transformOrigin: '50% 50%',
+            },
+            '+=0.1'
+          )
+          .to(
+            '.smile',
+            {
+              attr: {
+                fill: 'black',
+              },
+              duration: 0.1,
+            },
+            '<'
+          )
+          .to('.c', {
+            cx: '25',
+            cy: '25',
+            transformOrigin: '50% 50%',
+          })
+          .to(
+            '.smile',
+            {
+              attr: {
+                fill: 'none',
+              },
+              duration: 0.1,
+            },
+            '<'
+          );
+      };
+      const animateLids = () => {
+        const tl2 = gsap.timeline();
+        tl2
+          .fromTo(
+            ['.lid1', '.lid2'],
+            {
+              attr: {
+                y1: '18.5',
+                y2: '18.5',
+              },
+            },
+            {
+              attr: {
+                y1: '17',
+                y2: '17',
+              },
+              repeat: -1,
+              repeatDelay: 5,
+              duration: 0.5,
+            }
+          )
+          .fromTo(
+            ['.lid11', '.lid22'],
+            {
+              attr: {
+                y1: '21',
+                y2: '21',
+              },
+            },
+            {
+              attr: {
+                y1: '23',
+                y2: '23',
+              },
+              repeat: -1,
+              repeatDelay: 5,
+              duration: 0.5,
+            },
+            '<'
+          );
+      };
+      const resetAnimations = () => {
+        gsap.to('.c, .smile', {
+          clearProps: 'all',
+        });
+      };
+      resetAnimations();
+      animateSections();
+      animateLids();
+    });
+    return () => ctx.revert();
   }, [ratio]);
+
   return (
     <>
       <div className="flex flex-col gap-4 dark:text-white justify-center items-center text-black text-xl sm:text-2xl text-center font-bold">
-        <h2>تقييم المستخدمين</h2>
+        <h2>تقييم المستخدمين{reciperate}%</h2>
         <div className="w-full flex gap-4 justify-center items-center overflow-visible h-[40px]">
           {ratio.map((p, index) => (
             <svg

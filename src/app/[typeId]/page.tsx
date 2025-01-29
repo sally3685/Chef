@@ -1,56 +1,61 @@
+import { Suspense } from 'react';
 import Home from './_component/content';
+import Features from './_component/Features';
 import Menu from './_component/Menu';
+import Loading from './loading';
 const food = [
   {
     id: '1',
-    title: 'أشهى وصفات الغداء',
-    vid: '/v1.mp4',
+    title: 'lunch',
   },
   {
     id: '2',
-    title: 'أشهى وصفات الفطور',
-    vid: '/v4.mp4',
+    title: 'breakfast',
   },
   {
     id: '3',
-    title: 'أشهى وصفات الحلويات',
-    vid: '/v5.mp4',
+    title: 'sweet',
   },
   {
     id: '4',
-    title: 'أشهى وصفات مشروبات',
-    vid: '/v3.mp4',
+    title: 'drinks',
   },
 ];
+interface Props {
+  params: Promise<{ typeId: string }>;
+}
+export const generateMetadata = async (props: Props) => {
+  const params = await props.params;
+  let typeIdawaited = params.typeId;
 
-type Props = {
-  params: {
-    typeId: string | undefined;
-  };
-};
-export const generateMetadata = async ({ params }: Props) => {
-  let { typeId } = await params;
-  if (!typeId) {
-    typeId = '1';
-  }
-  if (isNaN(parseInt(typeId) - 1) || parseInt(typeId) - 1 >= food.length) {
+  if (
+    typeIdawaited !== 'lunch' &&
+    typeIdawaited !== 'breakfast' &&
+    typeIdawaited !== 'sweet' &&
+    typeIdawaited !== 'drinks'
+  ) {
     return {
       title: `Not found 404`,
     };
   } else {
     return {
-      title: `${food[parseInt(typeId) - 1].title}`,
+      title: typeIdawaited,
     };
   }
 };
-export default async function Meta() {
+
+export default async function Meta(props: Props) {
+  const params = await props.params;
+  let typeIdawaited = params.typeId;
   return (
     <>
       {/* <Throw></Throw> */}
-
+      {/* 
       <Home></Home>
-
-      <Menu></Menu>
+      <Features></Features> */}
+      <Suspense fallback={<Loading></Loading>}>
+        <Menu typeId={typeIdawaited as string}></Menu>
+      </Suspense>
     </>
   );
 }
