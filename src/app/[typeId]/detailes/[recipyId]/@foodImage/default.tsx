@@ -36,7 +36,6 @@ const foodimage = () => {
   });
 
   const params = useParams();
-  // console.log(params);
   const { recipyId } = params;
 
   type reci = {
@@ -80,8 +79,6 @@ const foodimage = () => {
     fetchData();
     setError(null);
   }, [refresh]);
-  // console.log(itemsArray[parseInt(rec) - 1].src.src);
-  // const { recipyId } = await params;{ params }: { params: Props }
   return (
     <>
       <div className="relative   flex justify-start items-center flex-col h-full mt-4">

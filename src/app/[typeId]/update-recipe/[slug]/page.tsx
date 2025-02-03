@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { PopoverPicker } from '../../_component/PopoverPicker';
 import { postRecipy, updateRecipe } from '@/data-access/recipies';
 import { useUser } from '@clerk/nextjs';
@@ -7,6 +7,7 @@ import { getOneRecipy } from '@/data-access/recipies';
 import { TimeForCooking, Ingredients } from '@prisma/client';
 import Image from 'next/image';
 import Loading from '../../loading';
+import gsap from 'gsap';
 import { useParams } from 'next/navigation';
 import { deleteUTFiles } from '@/data-access/recipies';
 import { SubmitButton } from '../../_component/Button';
@@ -63,7 +64,29 @@ export default function UpdateRecipy() {
     fetchData();
     setError(null);
   }, [refresh]);
+  useLayoutEffect(() => {
+    let ctx = gsap.context(() => {
+      const items = document.querySelectorAll('.enterAnimations');
+      const tl = gsap.timeline();
+      tl.fromTo(
+        items,
+        {
+          y: -50,
+          opacity: 0,
+        },
+        {
+          y: 0,
+          stagger: 0.2,
+          ease: 'back.out',
+          opacity: 1,
+          position: 'relative',
+        }
+      );
+    });
 
+    titleRef?.current?.focus();
+    return () => ctx.revert();
+  }, [isFetchLoad]);
   const deletePhoto = async () => {
     setFetchLoad(true);
     const url = recipe?.src.split('/').pop();
@@ -161,7 +184,7 @@ export default function UpdateRecipy() {
        mx-auto p-2  max-w-7xl section-min-height  lg:flex-row-reverse flex-col"
         >
           <>
-            <div className="text-sm lg:text-lg flex lg:flex-col top-[87px] z-[1] bg-[#151517] lg:bg-none w-[100%] justify-evenly items-center self-start sticky lg:top-[10rem] left-0 lg:w-[30%]  h-[30%] shadow-[0_0_11px_4px_#f3d34a] border-[#f3d34a] rounded p-4">
+            <div className="text-sm lg:text-lg flex lg:flex-col top-[87px] z-[1] bg-[#f5f5f4] dark:bg-[#151517] dark:lg:bg-[#00000000] w-[100%] justify-evenly items-center self-start sticky lg:top-[10rem] left-0 lg:w-[30%]  h-[30%] shadow-[0_0_11px_4px_#f3d34a] border-[#f3d34a] rounded p-4">
               <p aria-label="h1" className="text-[#f3d34a] mb-1 font-bold">
                 معلومات مساعدة
               </p>
@@ -215,7 +238,7 @@ export default function UpdateRecipy() {
             </div>
 
             <div className="lg:w-1/2 w-[90%] mt-4 mb-4">
-              <h1 className="enterAnimation relative text-2xl lg:text-3xl font-medium mb-4 text-center">
+              <h1 className="enterAnimations relative text-2xl lg:text-3xl font-medium mb-4 text-center">
                 تعديل وصفة <span className="text-orange-400">{url}</span>
               </h1>
               {submit && (
@@ -229,6 +252,11 @@ export default function UpdateRecipy() {
               <form
                 className="flex flex-col justify-center items-center space-y-8 w-full  "
                 action={async (formData: FormData) => {
+                  formData.delete('steps');
+                  steps.map((element) => {
+                    formData.append('steps', element);
+                  });
+
                   const res = await updateRecipe(formData);
                   if (res.status === 500) throw new Error(res.message);
                   else {
@@ -238,7 +266,7 @@ export default function UpdateRecipy() {
                   }
                 }}
               >
-                <div className="enterAnimation  flex relative  flex-col space-y-2 items-start  w-full">
+                <div className="enterAnimations  flex relative  flex-col space-y-2 items-start  w-full">
                   <label
                     htmlFor="title"
                     className="flex space-x-3 justify-center items-center text-lg"
@@ -248,7 +276,7 @@ export default function UpdateRecipy() {
 
                   <input
                     ref={titleRef}
-                    className="w-full !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
+                    className="w-full !rounded text-[#151517] dark:bg-white bg-[#edb91f69]  p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                     id="title"
                     type="title"
                     placeholder="متبل الشمندر على الطريقة السورية"
@@ -261,7 +289,7 @@ export default function UpdateRecipy() {
                     onBlur={() => setTitleFocus(false)}
                   />
                 </div>
-                <div className="enterAnimation  flex relative  flex-col space-y-2 items-start  w-full">
+                <div className="enterAnimations  flex relative  flex-col space-y-2 items-start  w-full">
                   <label
                     htmlFor="classification"
                     className="flex space-x-3 justify-center items-center text-lg"
@@ -285,7 +313,7 @@ export default function UpdateRecipy() {
                     <option value="drink">شراب</option>
                   </select>
                 </div>
-                <div className="enterAnimation flex relative  flex-col space-y-2 items-start  w-full">
+                <div className="enterAnimations flex relative  flex-col space-y-2 items-start  w-full">
                   <label
                     htmlFor="additional"
                     className="flex space-x-3 justify-center items-center text-lg"
@@ -293,7 +321,7 @@ export default function UpdateRecipy() {
                     معلومات اضافية
                   </label>
                   <input
-                    className="w-full !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
+                    className="w-full !rounded text-[#151517] dark:bg-white bg-[#edb91f69] p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                     id="additional"
                     placeholder="يقدم بارد"
                     type="text"
@@ -307,7 +335,7 @@ export default function UpdateRecipy() {
                 </div>
 
                 <div
-                  className={`shadow-[0_0_11px_4px_#f3a738] border-[#f3a738] bg-opacity-55 rounded p-4 enterAnimation flex relative flex-col space-y-2 items-start w-full`}
+                  className={`shadow-[0_0_11px_4px_#f3a738] border-[#f3a738]  rounded p-4 enterAnimations flex relative flex-col space-y-2 items-start w-full dark:bg-[#00000000] bg-[#ce8538]`}
                 >
                   <label
                     htmlFor="steps"
@@ -338,7 +366,7 @@ export default function UpdateRecipy() {
                           />
                           <div
                             aria-label="button"
-                            className="cursor-pointer bg-[#f3a738] w-[15%] text-base text-[#151517] rounded p-1 text-center h-full"
+                            className="cursor-pointer dark:bg-[#f3a738] bg-[#b25518] w-[15%] text-base text-[#151517] rounded p-1 text-center h-full"
                             onClick={() => removeStep(0)}
                           >
                             إزالة خطوة
@@ -366,7 +394,7 @@ export default function UpdateRecipy() {
                           />
                           <div
                             aria-label="button"
-                            className="cursor-pointer bg-[#f3a738] w-[15%] text-base text-[#151517] rounded p-1 text-center h-full"
+                            className="cursor-pointer dark:bg-[#f3a738] bg-[#b25518] w-[15%] text-base text-[#151517] rounded p-1 text-center h-full"
                             onClick={() => removeStep(0)}
                           >
                             إزالة خطوة
@@ -375,7 +403,7 @@ export default function UpdateRecipy() {
                       )}
                   <div
                     aria-label="button"
-                    className="cursor-pointer bg-[#f3a738] w-[20%] text-base text-[#151517] rounded p-1 text-center h-full"
+                    className="cursor-pointer dark:bg-[#f3a738] bg-[#b25518] w-[20%] text-base text-[#151517] rounded p-1 text-center h-full"
                     onClick={addStep}
                   >
                     إضافة خطوة
@@ -383,7 +411,7 @@ export default function UpdateRecipy() {
 
                   <div
                     aria-label="button"
-                    className="w-full h-4 text-center cursor-pointer text-[#dbdadab5]"
+                    className="w-full h-4 text-center cursor-pointer text-[#0000008f] dark:text-[#dbdadab5]"
                     onClick={() => {
                       setOpenSteps(!openSteps);
                     }}
@@ -392,7 +420,7 @@ export default function UpdateRecipy() {
                   </div>
                 </div>
 
-                <div className="enterAnimation flex relative  flex-col space-y-2 items-start  w-full">
+                <div className="enterAnimations flex relative  flex-col space-y-2 items-start  w-full">
                   <label
                     htmlFor="service"
                     className="flex space-x-3 justify-center items-center text-lg"
@@ -400,20 +428,27 @@ export default function UpdateRecipy() {
                     عدد الأشخاص
                   </label>
                   <input
-                    className="w-full !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
+                    className="w-full !rounded text-[#151517] dark:bg-white bg-[#edb91f69] p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                     id="service"
                     type="number"
                     min="1"
                     name="service"
                     required
-                    value={service || 1}
-                    onChange={(e) => setService(parseInt(e.target.value))}
+                    value={service}
+                    onChange={(e) => {
+                      const inputValue = parseInt(e.target.value);
+                      if (!isNaN(inputValue)) {
+                        setService(inputValue);
+                      } else {
+                        setService(1);
+                      }
+                    }}
                     onFocus={() => setServiceFocus(true)}
                     onBlur={() => setServiceFocus(false)}
                     aria-describedby="servicenote"
                   />
                 </div>
-                <div className="enterAnimation flex relative  flex-col space-y-2 items-start  w-full">
+                <div className="enterAnimations flex relative  flex-col space-y-2 items-start  w-full">
                   <label
                     htmlFor="timeForCooking"
                     className="flex space-x-3 justify-center items-center text-lg"
@@ -422,16 +457,21 @@ export default function UpdateRecipy() {
                   </label>
                   <div className="flex gap-4 w-full">
                     <input
-                      className="w-1/2 !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
+                      className="w-1/2 !rounded text-[#151517] dark:bg-white bg-[#edb91f69] p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                       id="timeForCooking"
                       type="number"
-                      min={5}
+                      min={0}
                       required
                       name="timeForCookingNumber"
-                      value={timeForCookingNumber || 0}
-                      onChange={(e) =>
-                        setTimeForCookingNumber(parseInt(e.target.value))
-                      }
+                      value={timeForCookingNumber}
+                      onChange={(e) => {
+                        const inputValue = parseInt(e.target.value);
+                        if (!isNaN(inputValue)) {
+                          setTimeForCookingNumber(inputValue);
+                        } else {
+                          setTimeForCookingNumber(0);
+                        }
+                      }}
                       onFocus={() => setTimeForCookingNumberFocus(true)}
                       onBlur={() => setTimeForCookingNumberFocus(false)}
                       aria-describedby="timeforcookingnotes"
@@ -448,13 +488,13 @@ export default function UpdateRecipy() {
                       aria-describedby="timeforcookingnotes"
                       className="w-1/2 !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                     >
-                      <option value="second">ثانية</option>
-                      <option value="minute">دقيقة</option>
-                      <option value="hour">ساعة</option>
+                      <option value="ثانية">ثانية</option>
+                      <option value="دقيقة">دقيقة</option>
+                      <option value="ساعة">ساعة</option>
                     </select>
                   </div>
                 </div>
-                <div className=" flex flex-col justify-evenly gap-4 items-start p-4 rounded shadow-[0_0_11px_4px_#eea243] border-[#eea243] w-full">
+                <div className=" flex flex-col justify-evenly gap-4 items-start p-4 rounded shadow-[0_0_11px_4px_#eea243] border-[#eea243] w-full dark:bg-[#00000000] bg-[#b25518]">
                   <label
                     htmlFor="decore"
                     className="flex space-x-3 justify-center items-center text-lg mb-4"
@@ -462,7 +502,7 @@ export default function UpdateRecipy() {
                     الزينة
                   </label>
                   <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full">
-                    <div className="enterAnimation flex relative  flex-col space-y-2 items-start  w-full">
+                    <div className="enterAnimations flex relative  flex-col space-y-2 items-start  w-full">
                       <label
                         htmlFor="decore"
                         className="flex space-x-3 justify-center items-center text-lg"
@@ -483,7 +523,7 @@ export default function UpdateRecipy() {
                         <option value="coffeeBean.svg">حبات بن </option>
                       </select>
                     </div>
-                    <div className="enterAnimation flex relative  flex-col space-y-2 items-start  w-full">
+                    <div className="enterAnimations flex relative  flex-col space-y-2 items-start  w-full">
                       <label
                         htmlFor="color"
                         className="flex space-x-3 justify-center items-center text-lg"
@@ -511,7 +551,7 @@ export default function UpdateRecipy() {
                     </div>
                   </div>
                 </div>
-                <div className="enterAnimation flex relative  flex-col space-y-2 items-start  w-full">
+                <div className="enterAnimations flex relative  flex-col space-y-2 items-start  w-full">
                   <label
                     htmlFor="type"
                     className="flex space-x-3 justify-center items-center text-lg"
@@ -519,7 +559,7 @@ export default function UpdateRecipy() {
                     نوع الطبق/المشروب
                   </label>
                   <input
-                    className="w-full !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
+                    className="w-full !rounded text-[#151517] dark:bg-white bg-[#edb91f69] p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                     id="type"
                     type="text"
                     placeholder="نباتي"
@@ -532,7 +572,7 @@ export default function UpdateRecipy() {
                     aria-describedby="typenote"
                   />
                 </div>
-                <div className="enterAnimation flex relative  flex-col items-start space-y-2 p-4 rounded shadow-[0_0_11px_4px_#f3d34a] border-[#f3d34a] w-full">
+                <div className="enterAnimations flex relative  flex-col items-start space-y-2 p-4 rounded shadow-[0_0_11px_4px_#f3d34a] border-[#f3d34a] dark:bg-[#00000000] bg-[#d3b577] w-full">
                   <div className="w-full ">
                     {deletedPhoto === 0 ? (
                       <>

@@ -71,6 +71,23 @@ export const getOneRecipy = cache(async (slug: string) => {
     };
   }
 });
+export const getOneRecipyById = cache(async (id: string) => {
+  try {
+    const recipe = await prisma.recipe.findFirst({
+      where: { id },
+      select: { title: true, src: true },
+    });
+
+    if (recipe) return { status: 200, recipe: recipe };
+    else return { status: 200, recipe: null };
+  } catch (err) {
+    return {
+      status: 500,
+      message:
+        'حدث خطأ أثناء تحميل الوصفة الاعلى تقييما الرجاء فحص اتصال الإنترنت والمحاولة مجدداً',
+    };
+  }
+});
 export const updateRecipe = async (formData: FormData) => {
   let photoUrl;
   const files = formData.get('files') as File;
@@ -140,29 +157,22 @@ export const deleteRecipe = async (slug: string, classification: string) => {
         slug: slug,
       },
     });
-    console.log(res, 'dfdvcdvcd');
-    return { status: 200, message: 'dfdcccccccccccc' };
+    return { status: 200 };
   } catch (err: any) {
-    console.log(err.stack);
     return {
       status: 500,
       message: 'تعذر حذف الوصفة الرجاءالمحاولة مجددا',
     };
-  } finally {
-    revalidatePath(`/${classification}`);
-    redirect(`/${classification}`);
   }
 };
 export const postRecipy = async (formData: FormData) => {
   let photoUrl;
   const files = formData.get('files') as File;
-  console.log(files);
   if (files?.name !== 'undefined') {
     try {
       const res = await utapi.uploadFiles(files);
       photoUrl = res.data?.url;
     } catch (err) {
-      console.log(err, 'dscscscsdcsdcdscdscdscds');
       return {
         status: 500,
         message:

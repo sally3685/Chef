@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { updateQueryString } from '@/helpers/subNavigation';
 import { useSearchParams } from 'next/navigation';
-import reviews from '../comments';
+
 import { Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
@@ -115,8 +115,7 @@ export default function WriteReview() {
         xl:row-start-4 xl:col-start-3
         dark:bg-transparent
         dark:border-[#eea243]
-         
-        bg-[#ce8538] border-[#ce8538] shadow-[0_0_11px_4px_#ce8538] dark:shadow-[0_0_11px_4px_#eea243]
+        bg-[#b25518] border-[#b25518] shadow-[0_0_11px_4px_#b25518] dark:shadow-[0_0_11px_4px_#eea243]
         
         lg:row-span-2 lg:col-span-4 
         lg:row-start-4 lg:col-start-2
@@ -139,11 +138,11 @@ export default function WriteReview() {
       >
         {write === 'true' ? (
           <div className="flex flex-col justify-center items-center gap-4 h-full relative w-[100%] p-2">
-            <h2 className="text-xl sm:text-2xl text-center text-[#eea243] font-bold">
+            <h2 className="text-xl sm:text-2xl text-center text-white dark:text-[#eea243] font-bold">
               شاركنا رأيك😊
             </h2>
             {sub ? (
-              <p className="text-center text-[#eea243] font-bold w-full">
+              <p className="text-center text-white dark:text-[#eea243] font-bold w-full">
                 ...يتم معالجة الطلب الرجاء الانتظار
               </p>
             ) : (
@@ -208,7 +207,7 @@ export default function WriteReview() {
                 </button>
               </>
             ) : isLoaded && !user ? (
-              <p className="text-lg sm:text-xl border border-t-0 border-r-0 border-l-0 p-2 border-b-gray-200">
+              <p className="text-lg sm:text-xl border border-t-0 border-r-0 border-l-0 p-2 text-white border-b-gray-200">
                 لا يمكن اضافة تعليق دون تسجيل دخولك للموقع 😔
               </p>
             ) : (
@@ -218,7 +217,7 @@ export default function WriteReview() {
             )}
 
             <button
-              className="border border-solid border-x-8 border-y-8 border-b-0 border-l-0 border-white dark:border-[#eea243] p-4 w-[60%] absolute bottom-0 left-0"
+              className="border border-solid border-x-8 border-y-8 border-b-0 border-l-0 border-white dark:border-[#eea243] p-4 w-[60%] absolute bottom-0 left-0 text-white"
               onClick={() => {
                 updateQueryString(pathName, router, [
                   { name: 'writeReview', value: 'true', type: 'delete' },
@@ -235,7 +234,7 @@ export default function WriteReview() {
                 تعليقات المستخدمين
               </h2>
               {subdel ? (
-                <p className="text-center text-[#eea243] font-bold w-full">
+                <p className="text-center dark:text-[#eea243] text-white font-bold w-full">
                   ...يتم معالجة الطلب الرجاء الانتظار
                 </p>
               ) : (
@@ -265,7 +264,7 @@ export default function WriteReview() {
                       review.comments.length > 0 &&
                       review.comments?.map((comment, id) => (
                         <div key={id}>
-                          <div className="flex-col sm:flex-row gap-[5px] flex sm:gap-2 items-center  border border-t-0 border-r-0 border-l-0 p-2">
+                          <div className="flex-col sm:flex-row gap-[5px] flex sm:gap-2 items-center  border border-t-0 border-r-0 border-l-0 p-2 w-full">
                             <div className="flex justify-center items-center gap-[5px]">
                               {user?.id === review.user.clerkId ? (
                                 <span
@@ -288,7 +287,7 @@ export default function WriteReview() {
                                 {comment.text}
                               </p>
                             </div>
-                            <span className="relative flex justify-end text-sm text-stone-400 w-[40%]">
+                            <span className="relative flex justify-end text-sm text-white dark:text-stone-400 w-[40%]">
                               {review.user.userName}{' '}
                               {comment.date.toLocaleDateString('en-GB')}
                             </span>
@@ -306,7 +305,7 @@ export default function WriteReview() {
               </div>
             </div>{' '}
             <button
-              className="border border-solid border-x-8 border-y-8 border-b-0 border-l-0  dark:border-[#eea243] border-white p-4 w-[40%] absolute bottom-0 left-0"
+              className="border border-solid border-x-8 border-y-8 border-b-0 border-l-0  dark:border-[#eea243] border-white p-4 w-[40%] absolute bottom-0 left-0 text-white"
               onClick={() =>
                 updateQueryString(pathName, router, [
                   { name: 'writeReview', value: 'true', type: 'add' },

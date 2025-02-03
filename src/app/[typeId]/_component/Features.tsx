@@ -1,9 +1,6 @@
 'use client';
-import React, { useLayoutEffect, useRef } from 'react';
-import carrot from '@/app/assets/images/general/carrot13.png'; //4
+import React, { useLayoutEffect } from 'react';
 import knife from '@/app/assets/images/general/knife.svg';
-// import soup from '@/app/assets/images/general/soup.svg';
-// import plate from '@/app/assets/images/general/plate.svg';
 import wood from '@/app/assets/images/general/wood.svg';
 import smoke from '@/app/assets/images/general/smoke.png';
 import styles from '@/app/assets/css/features.module.css';
@@ -328,12 +325,12 @@ const Features = () => {
             </div>
 
             <div
-              className={`hiddenBox scale-0 absolute   right-[50%] flex  z-[-1] bg-[#bc7f37] dark:bg-[#b25518] h-full rounded-3xl  justify-center items-center dark:border dark:border-x-2 dark:border-y-2 border-[#bc7f37] ${styles.thirdContainer}`}
+              className={`hiddenBox scale-0 absolute   right-[50%] flex  z-[-1] bg-[#b25518] h-full rounded-3xl  justify-center items-center dark:border dark:border-x-2 dark:border-y-2 border-[#bc7f37] ${styles.thirdContainer}`}
             >
               <div className={` h-full ${styles.thirdExtra}`}></div>
               <p
                 style={{ lineHeight: '2' }}
-                className={`w-1/2 sm:text-2xl text-xl textup1 inline-block overflow-hidden dark:text-[#ffffffe7] text-[#111111] ${styles.thirdText}`}
+                className={`w-1/2 sm:text-2xl text-xl textup1 inline-block overflow-hidden text-[#ffffffe7] ${styles.thirdText}`}
               >
                 هل لديك وصفة خاصة ترغب في مشاركتها؟{' '}
                 <span

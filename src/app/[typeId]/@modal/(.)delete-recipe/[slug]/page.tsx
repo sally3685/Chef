@@ -34,20 +34,20 @@ export default function Page() {
         if (res1.status === 500) {
           setError(res1.message as string);
         } else {
+          setFetchLoad(false);
           alert('تم حذف الوصفة');
           router.back();
         }
-        setFetchLoad(false);
       }
     }
   };
 
   slug = slug.replaceAll('-', ' ');
   slug = slug.replace(/[0-9]/g, '');
-  console.log(slug);
+
   return (
-    <div className="bg-[#151517] bg-opacity-75 flex justify-evenly items-center w-full h-full absolute z-[4] ">
-      <div className="bg-[#151517] shadow-[0_0_11px_4px_#eea243] border border-l-2 border-b-2 border-t-2 border-r-2 border-[#eea243] lg:w-1/2 h-1/2 w-3/4 max-h-[400px] flex gap-[2rem] justify-center items-center flex-col relative">
+    <div className="bg-[#151517] bg-opacity-75 flex justify-evenly items-center w-full h-full fixed top-0 z-[4] ">
+      <div className="dark:bg-[#151517] bg-[#f5f5f4] shadow-[0_0_11px_4px_#eea243] border border-l-2 border-b-2 border-t-2 border-r-2 border-[#eea243] lg:w-1/2 h-1/2 w-3/4 max-h-[400px] flex gap-[2rem] justify-center items-center flex-col relative">
         <button
           onClick={() => {
             router.back();

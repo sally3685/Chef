@@ -329,7 +329,7 @@ export default function UpdateIngredient() {
        mx-auto p-2  max-w-7xl section-min-height  lg:flex-row-reverse flex-col"
         >
           <>
-            <div className="text-sm lg:text-lg flex lg:flex-col top-[87px] z-[1] bg-[#151517] lg:bg-none w-[100%] justify-evenly items-center self-start sticky lg:top-[10rem] left-0 lg:w-[30%]  h-[30%] shadow-[0_0_11px_4px_#f3d34a] border-[#f3d34a] rounded p-4">
+            <div className="text-sm lg:text-lg flex lg:flex-col top-[87px] z-[1] bg-[#f5f5f4] dark:bg-[#151517] dark:lg:bg-[#00000000] w-[100%] justify-evenly items-center self-start sticky lg:top-[10rem] left-0 lg:w-[30%]  h-[30%] shadow-[0_0_11px_4px_#f3d34a] border-[#f3d34a] rounded p-4">
               <p aria-label="h1" className="text-[#f3d34a]  mb-1 font-bold">
                 معلومات مساعدة
               </p>
@@ -577,7 +577,7 @@ export default function UpdateIngredient() {
 
                   <input
                     ref={titleRef}
-                    className="w-full !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
+                    className="w-full !rounded text-[#151517] dark:bg-white bg-[#edb91f69] p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                     id="title"
                     type="title"
                     placeholder="متبل الشمندر على الطريقة السورية"
@@ -604,7 +604,7 @@ export default function UpdateIngredient() {
                     معلومات اضافية
                   </label>
                   <input
-                    className="w-full !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
+                    className="w-full !rounded text-[#151517] dark:bg-white bg-[#edb91f69] p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                     id="additional"
                     placeholder="يقدم بارد"
                     type="text"
@@ -631,9 +631,10 @@ export default function UpdateIngredient() {
                   </label>
                   <div className="flex gap-4 w-full">
                     <input
-                      className="w-1/2 !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
+                      className="w-1/2 !rounded text-[#151517] dark:bg-white bg-[#edb91f69] p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                       type="number"
-                      min={5}
+                      step="0.01"
+                      min={0.0}
                       name="amountNumber"
                       value={
                         ingredient[indexIngredient].amount.number as number
@@ -642,9 +643,13 @@ export default function UpdateIngredient() {
                       onChange={(e) =>
                         setIngredient((prev) => {
                           const a = [...prev];
-                          a[indexIngredient].amount.number = parseInt(
-                            e.target.value
-                          );
+                          const inputValue = parseFloat(e.target.value);
+                          if (!isNaN(inputValue)) {
+                            a[indexIngredient].amount.number = inputValue;
+                          } else {
+                            a[indexIngredient].amount.number = 0.0;
+                          }
+
                           return a;
                         })
                       }
@@ -653,7 +658,7 @@ export default function UpdateIngredient() {
                       aria-describedby="amountNumbernotes"
                     />
                     <input
-                      className="w-1/2 !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
+                      className="w-1/2 !rounded text-[#151517] dark:bg-white bg-[#edb91f69] p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                       type="text"
                       name="amountUnit"
                       placeholder="غرام"
@@ -672,7 +677,7 @@ export default function UpdateIngredient() {
                     />
                   </div>
                 </div>
-                <div className="enterAnimations flex relative  flex-col items-start space-y-2 p-4 rounded shadow-[0_0_11px_4px_#f3d34a] border-[#f3d34a] w-full">
+                <div className="enterAnimations flex relative  flex-col items-start space-y-2 p-4 rounded shadow-[0_0_11px_4px_#f3d34a] border-[#f3d34a] dark:bg-[#00000000] bg-[#ce8538] w-full">
                   <label
                     htmlFor="Form"
                     className="flex space-x-3 justify-center items-center  text-lg mb-4"
@@ -745,7 +750,7 @@ export default function UpdateIngredient() {
                   </div>
                 </div>
                 <div
-                  className={`shadow-[0_0_11px_4px_#f3a738] border-[#f3a738] bg-opacity-55 rounded p-4 enterAnimations flex relative flex-col space-y-2 items-start w-full`}
+                  className={`shadow-[0_0_11px_4px_#f3a738] border-[#f3a738] dark:bg-[#00000000] bg-[#b25518]  text-white rounded p-4 enterAnimations flex relative flex-col space-y-2 items-start w-full`}
                 >
                   <label
                     htmlFor="calory"

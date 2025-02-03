@@ -55,7 +55,7 @@ export default function Detaileslayout({
   return (
     <>
       <main
-        className="contain max-w-7xl p-2 w-full my-12 mx-6 md:mx-12 3xl:mx-auto grid 
+        className="contain max-w-7xl p-2 w-full mb-12 mx-6 md:mx-12 3xl:mx-auto grid 
       xl:grid-cols-[1fr_1fr_1fr_1fr_1fr]
        xl:grid-rows-[0.2fr_0.5fr_0.5fr_0.2fr_0.6fr]
     lg:grid-rows-[0.2fr_0.1fr_0.5fr_0.1fr_0.6fr]

@@ -194,7 +194,6 @@ export default function ForgotPasswordPage() {
         setsubmit(false);
         if (isClerkAPIResponseError(err)) {
           err.errors.map((el: any) => {
-            console.log(el);
             if (el.meta?.paramName === 'password') {
               setErrorsPassword((prev) => {
                 let p = prev;
@@ -249,7 +248,6 @@ export default function ForgotPasswordPage() {
           setActive({ session: result.createdSessionId });
           setError('');
         } else {
-          console.log(result);
         }
       })
       .catch((err) => {

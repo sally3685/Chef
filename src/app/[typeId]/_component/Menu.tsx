@@ -147,7 +147,6 @@ export default function Menu({ typeId }: { typeId: string }) {
         ease: 'power1.inOut',
         // stagger: 0.1,
         rotate: 400,
-        onComplete: () => console.log('done'),
       });
       ScrollTrigger.create({
         trigger: '.ggg',
@@ -174,6 +173,7 @@ export default function Menu({ typeId }: { typeId: string }) {
   }, [isLoaded, loa]);
   useEffect(() => {
     setTypeFocus(true);
+    typeRef.current?.focus();
   }, []);
   if (error) {
     const ee = new Error(error);
@@ -271,7 +271,7 @@ export default function Menu({ typeId }: { typeId: string }) {
                       )}
                       {itemsArray.length === 0 && (
                         <>
-                          <p>لا يوجد وصفات بعد سجل دخول وأضف وصفتك الان </p>
+                          <p>لا يوجد وصفات بعد </p>
                         </>
                       )}
 
@@ -407,12 +407,12 @@ export default function Menu({ typeId }: { typeId: string }) {
                   styles.cardTDiv
                 } max-h-[calc(100vh - 68px)] h-[400px] flex justify-start items-center  max-w-6xl p-[15px] m-2 mb-4 ${
                   typeId === 'breakfast'
-                    ? 'bg-[#d3b57778] '
+                    ? 'dark:bg-[#d3b57778] bg-[#d3b577] '
                     : typeId === 'sweet'
-                    ? 'bg-[#fec29d78] '
+                    ? 'dark:bg-[#fec29d78] bg-[#fec29d] '
                     : typeId === 'lunch'
-                    ? 'bg-[#c38b5078] '
-                    : 'bg-[#e9e7c678] '
+                    ? 'dark:bg-[#c38b5078] bg-[#c38b50] '
+                    : 'dark:bg-[#e9e7c678] bg-[#e9e7c6] '
                 } rounded-xl relative
               
               `}

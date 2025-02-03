@@ -1,6 +1,5 @@
 'use client';
 import { Ingredients, TimeForCooking } from '@prisma/client';
-
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getOneRecipy } from '@/data-access/recipies';

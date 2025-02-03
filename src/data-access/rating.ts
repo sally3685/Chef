@@ -28,10 +28,56 @@ export const GetUserRate = cache(async (userId: string, recipeId: string) => {
     };
   }
 });
+export const getMostRatedRecipe = cache(async () => {
+  try {
+    const recipe = await prisma.user_Recipe.findMany({
+      orderBy: {
+        rating: 'desc',
+      },
+      take: 1,
+    });
+    return { status: 200, recipe: recipe[0] };
+  } catch (err) {
+    return {
+      status: 500,
+      message:
+        'حدث خطأ أثناء تحميل الوصفة الاعلى تقييما الرجاء فحص اتصال الإنترنت والمحاولة مجدداً',
+    };
+  }
+});
+export const getUserWithMostRecipes = async () => {
+  try {
+    const userWithMostRecipes = await prisma.user_Recipe.groupBy({
+      by: ['userId'],
+      _count: {
+        userId: true,
+      },
+      orderBy: {
+        _count: {
+          userId: 'desc',
+        },
+      },
+      take: 1,
+    });
+
+    if (userWithMostRecipes.length > 0) {
+      const userIdWithMostRecipes = userWithMostRecipes[0].userId;
+      return { status: 200, userId: userIdWithMostRecipes };
+    } else {
+      return { status: 404, message: 'لا يوجد وصفات بعد' };
+    }
+  } catch (err) {
+    return {
+      status: 500,
+      message:
+        'An error occurred while fetching the user with the most recipes. Please check your internet connection and try again.',
+    };
+  }
+};
+
 export const GetRecipeRate = cache(async (userId: string, recipeId: string) => {
   try {
     const id = userId + '_' + recipeId;
-    console.log(id);
     const res1 = await prisma.user_Recipe.aggregate({
       where: {
         customId: id,

@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
-import { useAnimation } from '@/helpers/useAnimation';
 import { useLayoutEffect } from 'react';
 import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
@@ -11,7 +10,6 @@ import { UserButton } from '@clerk/nextjs';
 import ThemeSwitch from './ThemeSwitch';
 export default function Header() {
   const { isSignedIn } = useUser();
-  console.log('User signed in:', isSignedIn);
   const food = [
     {
       id: '1',
@@ -97,7 +95,7 @@ export default function Header() {
     return () => ctx.revert();
   }, []);
 
-  useAnimation(() => {
+  useLayoutEffect(() => {
     if (clicked) {
       tl.current.play();
     } else tl.current.reverse();
@@ -114,18 +112,16 @@ export default function Header() {
   }, [pathName]);
   return (
     <header className=" sticky top-0 z-10  text-black ">
-      <section className="max-w-7xl h-[55px]  z-[00]  p-4 flex justify-between items-center bg-stone-100 dark:bg-[#d3b577] rounded-3xl relative top-[18px] mx-auto">
+      <section className="max-w-7xl h-[55px]  z-[00]  p-4 flex justify-between items-center bg-[#d3b577] rounded-3xl relative top-[18px] mx-auto">
         <div className="flex justify-end items-end gap-4">
-          <Image
-            className="transform -translate-y-2"
-            src="/logo.svg"
-            alt="My SVG Image"
-            width={40}
-            height={40}
-          />
-          <h1 className="text-3xl font-bold bottom-0 sm:text-4xl  text-black">
-            الشيف
-          </h1>
+          <Image src="/logo.svg" alt="My SVG Image" width={40} height={40} />
+          <Link href={`/`}>
+            {' '}
+            <h1 className="text-3xl font-bold bottom-0 sm:text-4xl  text-black">
+              الشيف
+            </h1>
+          </Link>
+
           <ThemeSwitch></ThemeSwitch>
         </div>
         <button

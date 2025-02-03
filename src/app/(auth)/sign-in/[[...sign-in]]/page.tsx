@@ -144,9 +144,6 @@ export default function SignInForm() {
 
         router.push('/');
       } else {
-        // If the status is not complete, check why. User may need to
-        // complete further steps.
-        console.error(JSON.stringify(signInAttempt, null, 2));
       }
     } catch (err) {
       setsubmit(false);

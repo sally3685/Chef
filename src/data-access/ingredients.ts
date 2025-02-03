@@ -115,11 +115,8 @@ export const postIngredient = async (
     for (let i = 0; i < dataIngred.length; i++) {
       if (filesForm[i]) {
         const files = filesForm[i] as File;
-        console.log(filesForm[i], 'filesForm');
         const res = await utapi.uploadFiles(files);
-        console.log(res, 'res');
         dataIngred[i].src = res.data?.url as string;
-        console.log(dataIngred[i], 'src');
       }
     }
   } catch (error: any) {

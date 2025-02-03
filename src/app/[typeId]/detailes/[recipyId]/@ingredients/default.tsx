@@ -2,7 +2,7 @@
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { updateQueryString } from '@/helpers/subNavigation';
-import caloriesArray from '../calories';
+
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useParams } from 'next/navigation';
@@ -83,8 +83,8 @@ export default function Ingredient() {
   return (
     <>
       <section
-        className="section xl:row-span-3 xl:col-span-3 xl:row-start-1 xl:col-start-1  border border-l-2 border-b-2 border-t-2 border-r-2 dark:shadow-[0_0_11px_4px_#f3a738] dark:border-[#f3a738] border-[#b25518] shadow-[0_0_11px_4px_#b25518] 
-        bg-[#b25518]
+        className="section xl:row-span-3 xl:col-span-3 xl:row-start-1 xl:col-start-1  border border-l-2 border-b-2 border-t-2 border-r-2 dark:shadow-[0_0_11px_4px_#f3a738] dark:border-[#f3a738] border-[#ce8538] shadow-[0_0_11px_4px_#ce8538] 
+        bg-[#ce8538]
         dark:bg-transparent
          lg:row-span-3 lg:col-span-3 
       lg:row-start-1 lg:col-start-1
@@ -156,7 +156,7 @@ export default function Ingredient() {
                 recipe?.ingredients &&
                 recipe?.ingredients?.length > 0 ? (
                 <>
-                  <div className="flex gap-2 justify-center my-4 items-center bg-[#f3a7384a] w-full p-2">
+                  <div className="flex gap-2 justify-center my-4 items-center dark:bg-[#f3a7384a] bg-[#ffffff4a] w-full p-2">
                     <h4 className="text-lg">
                       أهلا بك شيف{' '}
                       <span className="text-[#f3a738]  ">{user?.username}</span>{' '}
@@ -199,7 +199,9 @@ export default function Ingredient() {
                             <p className="text-lg sm:text-xl ">
                               {name} : {amount.number} {amount.unit}{' '}
                               <>
-                                <span key={index}>({additional})</span>
+                                {additional !== '' && (
+                                  <span key={index}>({additional})</span>
+                                )}
                               </>
                             </p>
                           </div>
@@ -231,10 +233,10 @@ export default function Ingredient() {
                 <div className="relative w-full h-full overflow-hidden flex justify-center flex-col items-center space-y-4">
                   {recipe.authorId === user?.id ? (
                     <>
-                      <div className="flex gap-2 justify-center my-4 items-center bg-[#f3a7384a] w-full p-2">
+                      <div className="flex gap-2 justify-center my-4 items-center bg-[#ffffff4a] dark:bg-[#f3a7384a] w-full p-2">
                         <h4 className="text-lg">
                           أهلا بك شيف{' '}
-                          <span className="text-[#f3a738]  ">
+                          <span className="dark:text-[#f3a738] text-white ">
                             {user?.username}
                           </span>{' '}
                           هل تريد إضافة المزيد من المكونات
@@ -243,15 +245,17 @@ export default function Ingredient() {
                           href={`/${recipe?.classification}/update-ingredients/${recipe?.slug}`}
                         >
                           <Plus
+                            className="dark:text-[#f3a738] text-white"
                             fontSize={20}
-                            color="#f3a738"
                             fontWeight={700}
                           />
                         </Link>
                       </div>
                     </>
                   ) : (
-                    <h1>لم يتم إضافة مكونات من الشيف بعد </h1>
+                    <h1 className="text-white">
+                      لم يتم إضافة مكونات من الشيف بعد{' '}
+                    </h1>
                   )}
                 </div>
               ) : (

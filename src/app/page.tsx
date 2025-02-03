@@ -1,11 +1,11 @@
+import { getMostRatedRecipe } from '@/data-access/rating';
 import Home from './[typeId]/_component/content';
 import Features from './[typeId]/_component/Features';
-
-export default function App() {
+const App = async () => {
   return (
     <>
       <Home></Home>
-      <Features></Features>
     </>
   );
-}
+};
+export default App;

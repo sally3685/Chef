@@ -35,11 +35,20 @@ export const generateMetadata = async (props: Props) => {
     typeIdawaited !== 'drinks'
   ) {
     return {
-      title: `Not found 404`,
+      title: `صفحة غير موجودة`,
     };
   } else {
     return {
-      title: typeIdawaited,
+      title:
+        typeIdawaited === 'lunch'
+          ? 'أشهى وصفات الغداء'
+          : typeIdawaited === 'breakfast'
+          ? 'أشهى وصفات الفطور'
+          : typeIdawaited === 'sweet'
+          ? 'أشهى وصفات الحلويات'
+          : 'أشهى وصفات المشروبات',
+      description:
+        'استمتع بتصفح مجموعتنا المميزة من وصفات الطعام الشهية على صفحة الطبخ. تعرف على وصفات لأطباق مختلفة من المطابخ العالمية مثل الأطباق الشرقية والغربية. اكتشف وصفات جديدة ومبتكرة تناسب جميع الأذواق والمناسبات. استعد وجبات شهية بطرق سهلة ومبسطة. تصفح الآن للحصول على إلهام لاستعداد وجبات طعام شهية ومميزة.',
     };
   }
 };

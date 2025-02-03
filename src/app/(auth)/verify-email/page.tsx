@@ -76,13 +76,11 @@ const verifyEmail = () => {
       // and redirect the user
       if (signUpAttempt.status === 'complete') {
         await setActive({ session: signUpAttempt.createdSessionId });
-        console.log('aaaaaaa', signUpAttempt, signUpAttempt.createdUserId);
         try {
           const a = await serverUser(
             signUpAttempt?.createdUserId!,
             signUpAttempt?.username!
           );
-          console.log(a);
           router.push('/');
         } catch (error) {
           throw new Error('something went wrong');
@@ -90,13 +88,11 @@ const verifyEmail = () => {
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
-        console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err: any) {
       setsubmit(false);
       if (isClerkAPIResponseError(err)) {
         err.errors.map((el: any) => {
-          console.log(el);
           if (el.meta?.paramName === 'code') {
             setErrorsCode((prev) => {
               let p = prev;
