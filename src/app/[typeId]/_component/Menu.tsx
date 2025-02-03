@@ -189,7 +189,7 @@ export default function Menu({ typeId }: { typeId: string }) {
   } else {
     return (
       <>
-        {isLoaded === false ? (
+        {isLoaded === false || isFetchLoad ? (
           <Loading />
         ) : (
           <main

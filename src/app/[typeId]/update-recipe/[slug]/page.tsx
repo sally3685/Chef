@@ -101,15 +101,15 @@ export default function UpdateRecipy() {
   const { isLoaded, user } = useUser();
   const params = useParams();
   const [submit, setSubmit] = React.useState(false);
-  const [title, setTitle] = React.useState('');
-  const [type, setType] = React.useState('');
+  const [title, setTitle] = React.useState<string>();
+  const [type, setType] = React.useState<string>();
   const [color, setColor] = React.useState('#aabbcc');
   const [service, setService] = React.useState<number>(1);
   const [timeForCookingNumber, setTimeForCookingNumber] =
     React.useState<number>(5);
-  const [timeUnit, setTimeUnit] = React.useState('minute');
-  const [decore, setDecore] = React.useState('mint1');
-  const [additional, setAdditional] = React.useState('');
+  const [timeUnit, setTimeUnit] = React.useState('دقيقة');
+  const [decore, setDecore] = React.useState('mint1.png');
+  const [additional, setAdditional] = React.useState<string>();
   const titleRef = React.useRef<HTMLInputElement>(null);
   const [titleFocus, setTitleFocus] = React.useState(true);
   const [additionalFocus, setAdditionalFocus] = React.useState(false);
@@ -125,7 +125,6 @@ export default function UpdateRecipy() {
   const [steps, setSteps] = React.useState(['']);
   const [openSteps, setOpenSteps] = React.useState(true);
   const [photoFocus, setPhotoFocus] = React.useState(false);
-  const [user1, setUser1] = React.useState('');
   const [explain] = React.useState(explaination);
   const [classification, setClassification] = React.useState('غداء');
   React.useEffect(() => {
@@ -156,7 +155,6 @@ export default function UpdateRecipy() {
   }, []);
   React.useEffect(() => {
     if (isLoaded) {
-      setUser1(user?.id!);
       titleRef?.current?.focus();
     }
   }, [isLoaded]);
@@ -281,7 +279,7 @@ export default function UpdateRecipy() {
                     type="title"
                     placeholder="متبل الشمندر على الطريقة السورية"
                     name="title"
-                    value={title || ''}
+                    value={title ? title : ''}
                     required
                     aria-describedby="titlenotes"
                     onChange={(e) => setTitle(e.target.value)}
@@ -326,7 +324,7 @@ export default function UpdateRecipy() {
                     placeholder="يقدم بارد"
                     type="text"
                     name="additional"
-                    value={additional || ''}
+                    value={additional ? additional : ''}
                     aria-describedby="additionalnotes"
                     onChange={(e) => setAdditional(e.target.value)}
                     onFocus={() => setAdditionalFocus(true)}
@@ -353,7 +351,7 @@ export default function UpdateRecipy() {
                             className="w-[90%] !rounded text-[#151517] bg-white p-2 focus:outline-orange-500 focus:outline-2 outline-none"
                             // type="text"
                             name="steps"
-                            value={step || ''}
+                            value={step ? step : ''}
                             required
                             onChange={(e) => {
                               const updatedSteps = [...steps];
@@ -383,7 +381,7 @@ export default function UpdateRecipy() {
                             // type="text"
                             name="steps"
                             required
-                            value={steps[0] || ''}
+                            value={steps[0] ? steps[0] : ''}
                             onChange={(e) => {
                               const updatedSteps = [...steps];
                               updatedSteps[0] = e.target.value;
@@ -434,7 +432,7 @@ export default function UpdateRecipy() {
                     min="1"
                     name="service"
                     required
-                    value={service}
+                    value={service ? service : 1}
                     onChange={(e) => {
                       const inputValue = parseInt(e.target.value);
                       if (!isNaN(inputValue)) {
@@ -463,7 +461,7 @@ export default function UpdateRecipy() {
                       min={0}
                       required
                       name="timeForCookingNumber"
-                      value={timeForCookingNumber}
+                      value={timeForCookingNumber ? timeForCookingNumber : 0}
                       onChange={(e) => {
                         const inputValue = parseInt(e.target.value);
                         if (!isNaN(inputValue)) {
@@ -480,7 +478,7 @@ export default function UpdateRecipy() {
                     <select
                       id="timeForCooking"
                       name="timeForCookingUnit"
-                      value={timeUnit || 'minute'}
+                      value={timeUnit ? timeUnit : 'دقيقة'}
                       required
                       onChange={(e) => setTimeUnit(e.target.value)}
                       onFocus={() => setTimeForCookingUnitFocus(true)}
@@ -510,7 +508,7 @@ export default function UpdateRecipy() {
                         صور الزينة حول الطبق
                       </label>
                       <select
-                        value={decore || 'mint1'}
+                        value={decore ? decore : 'mint1.png'}
                         name="decore"
                         onChange={(e) => setDecore(e.target.value)}
                         onFocus={() => setdecoreFocus(true)}
@@ -542,7 +540,7 @@ export default function UpdateRecipy() {
                       />
                       <input
                         name="color"
-                        value={color || '#aabbcc'}
+                        value={color ? color : '#aabbcc'}
                         hidden
                         onChange={() => {
                           return color;
@@ -564,7 +562,7 @@ export default function UpdateRecipy() {
                     type="text"
                     placeholder="نباتي"
                     name="type"
-                    value={type || ''}
+                    value={type ? type : ''}
                     required
                     onChange={(e) => setType(e.target.value)}
                     onFocus={() => setTypeFocus(true)}
@@ -574,7 +572,7 @@ export default function UpdateRecipy() {
                 </div>
                 <div className="enterAnimations flex relative  flex-col items-start space-y-2 p-4 rounded shadow-[0_0_11px_4px_#f3d34a] border-[#f3d34a] dark:bg-[#00000000] bg-[#d3b577] w-full">
                   <div className="w-full ">
-                    {deletedPhoto === 0 ? (
+                    {deletedPhoto === 0 && recipe && recipe.src ? (
                       <>
                         <label
                           htmlFor="photoUrl"
@@ -585,7 +583,7 @@ export default function UpdateRecipy() {
                         <input
                           name="filesText"
                           type="text"
-                          value={recipe?.src || undefined}
+                          value={recipe?.src}
                           hidden
                           onChange={() => {
                             return recipe?.src;
