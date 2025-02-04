@@ -48,84 +48,79 @@ export default function Home() {
 
   useLayoutEffect(() => {
     let ctx = gsap.context(() => {
-      if (document) {
-        const highliter = document.querySelectorAll('.highliter');
-        const herb1 = document.querySelectorAll('.herb1');
-        const herb2 = document.querySelectorAll('.herb2');
-        let mm = gsap.matchMedia();
+      let mm = gsap.matchMedia();
 
-        mm.add('(max-width:1023px)', () => {
-          gsap.registerPlugin(ScrollTrigger);
-          gsap.defaults({ ease: 'back.in', duration: 1 });
+      mm.add('(max-width:1023px)', () => {
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.defaults({ ease: 'back.in', duration: 1 });
 
-          const tl2 = gsap.timeline({
-            scrollTrigger: {
-              trigger: '.gggh',
-              start: 'top 10%',
-              end: '+=300px',
-              scrub: true,
-              pin: true,
-            },
-          });
-          tl2
-            .fromTo(
-              cardRef3.current,
-              {
-                translateX: -5,
-                opacity: 0,
-              },
-              {
-                opacity: 1,
-                translateX: 0,
-                zIndex: 1,
-              }
-            )
-            .fromTo(
-              cardRef2.current,
-              {
-                translateX: -5,
-                opacity: 0,
-              },
-              {
-                opacity: 1,
-                translateX: 0,
-                zIndex: 1,
-              }
-            );
+        const tl2 = gsap.timeline({
+          scrollTrigger: {
+            trigger: '.gggh',
+            start: 'top 10%',
+            end: '+=300px',
+            scrub: true,
+            pin: true,
+          },
         });
-        const tl = gsap.timeline();
-        tl.to('.highliter', {
-          backgroundSize: '100% 100%',
-          ease: 'back.in',
-          duration: 3,
-        })
+        tl2
           .fromTo(
-            herb1,
+            cardRef3.current,
             {
-              rotate: '10deg',
+              translateX: -5,
+              opacity: 0,
             },
             {
-              rotate: '0deg',
-              repeat: 3,
-              yoyo: true,
+              opacity: 1,
+              translateX: 0,
+              zIndex: 1,
             }
           )
           .fromTo(
-            herb2,
+            cardRef2.current,
             {
-              rotate: '185deg',
+              translateX: -5,
+              opacity: 0,
             },
             {
-              rotate: '180deg',
-              repeat: 3,
-              yoyo: true,
-            },
-            '<'
+              opacity: 1,
+              translateX: 0,
+              zIndex: 1,
+            }
           );
-      }
+      });
+      const tl = gsap.timeline();
+      tl.to('.highliter', {
+        backgroundSize: '100% 100%',
+        ease: 'back.in',
+        duration: 3,
+      })
+        .fromTo(
+          '.herb1',
+          {
+            rotate: '10deg',
+          },
+          {
+            rotate: '0deg',
+            repeat: 3,
+            yoyo: true,
+          }
+        )
+        .fromTo(
+          '.herb2',
+          {
+            rotate: '185deg',
+          },
+          {
+            rotate: '180deg',
+            repeat: 3,
+            yoyo: true,
+          },
+          '<'
+        );
     });
     return () => ctx.revert();
-  }, [document]);
+  });
   const typeRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<null | string>(null);
   const [refresh, setRefresh] = useState(false);
