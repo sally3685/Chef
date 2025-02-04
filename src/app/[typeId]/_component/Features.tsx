@@ -1,5 +1,5 @@
 'use client';
-import React, { useLayoutEffect } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import knife from '@/app/assets/images/general/knife.svg';
 import wood from '@/app/assets/images/general/wood.svg';
 import smoke from '@/app/assets/images/general/smoke.png';
@@ -9,7 +9,7 @@ import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 import gsap from 'gsap';
 const Features = () => {
   const fireArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
       gsap.defaults({ duration: 1 });

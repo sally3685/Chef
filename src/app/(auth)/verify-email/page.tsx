@@ -5,6 +5,7 @@ import { useSignUp } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useRef, useState, useEffect } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import { ClerkAPIError } from '@clerk/types';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
 
@@ -35,7 +36,7 @@ const verifyEmail = () => {
       paused: true,
     })
   );
-  React.useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const layer1 = document.getElementById('layer1');
       let value;

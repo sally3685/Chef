@@ -1,5 +1,6 @@
 'use client';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import { useUser } from '@clerk/nextjs';
 import Loading from '@/app/[typeId]/loading';
 import { SubmitButton } from '@/app/[typeId]/_component/Button';
@@ -268,7 +269,7 @@ export default function UpdateIngredient() {
   }, [isLoaded]);
   const [deletedPhoto, setDeletedPhoto] = React.useState(0);
 
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const items = document.querySelectorAll('.enterAnimations');
       const tl = gsap.timeline();

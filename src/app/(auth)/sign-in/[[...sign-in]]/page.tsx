@@ -5,7 +5,8 @@ import { useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CircleCheck, CirclePlus, Eye, EyeOff } from 'lucide-react';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import { useEffect } from 'react';
 import { ClerkAPIError } from '@clerk/types';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
@@ -39,7 +40,7 @@ export default function SignInForm() {
       paused: true,
     })
   );
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');
@@ -70,7 +71,7 @@ export default function SignInForm() {
     return () => ctx.revert();
   }, [email, errorsEmail]);
 
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');

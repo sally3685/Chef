@@ -2,7 +2,8 @@
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Search } from 'lucide-react';
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import styles from '@/app/assets/css/menu.module.css';
 // import itemsArray from '../detailes/[recipyId]/items';
 
@@ -102,7 +103,7 @@ export default function Menu({ typeId }: { typeId: string }) {
     setError(null);
   }, [typeId, refresh, pathname]);
 
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const items = document.querySelectorAll('.item');
       items.forEach((item) => {
@@ -119,11 +120,11 @@ export default function Menu({ typeId }: { typeId: string }) {
     });
     return () => ctx.revert();
   }, [type]);
-  // useLayoutEffect(() => {
+  // useAnimation(() => {
   //   let ctx = gsap.context(() => {});
   //   return () => ctx.revert();
   // }, []);
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const states = document.querySelectorAll('.tomato');
       const items = document.querySelectorAll('.wood');

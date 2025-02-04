@@ -6,7 +6,8 @@ import { useUser } from '@clerk/nextjs';
 import { Ingredients, TimeForCooking } from '@prisma/client';
 import gsap from 'gsap';
 import { useParams } from 'next/navigation';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import { GetRecipeRate, GetUserRate, PostUserRate } from '@/data-access/rating';
 export default function Rating() {
   const params = useParams();
@@ -105,7 +106,7 @@ export default function Rating() {
     }
   }, [currentuserrate]);
 
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const animateSections = () => {
         gsap.defaults({ ease: 'back.in', duration: 1.5 });

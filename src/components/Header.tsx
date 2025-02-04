@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
-import { useLayoutEffect } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import Link from 'next/link';
 import { useUser } from '@clerk/clerk-react';
 import { UserButton } from '@clerk/nextjs';
@@ -46,7 +46,7 @@ export default function Header() {
   //  https://stackademic.com/blog/how-to-use-gsap-with-nextjs-14-and-ssr
   const tl = useRef(gsap.timeline({ paused: true }));
   // const tl2 =;
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       gsap.set('.listItems', { y: 75 });
       tl.current = gsap
@@ -95,7 +95,7 @@ export default function Header() {
     return () => ctx.revert();
   }, []);
 
-  useLayoutEffect(() => {
+  useAnimation(() => {
     if (clicked) {
       tl.current.play();
     } else tl.current.reverse();

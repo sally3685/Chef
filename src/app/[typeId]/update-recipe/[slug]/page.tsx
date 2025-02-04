@@ -1,5 +1,6 @@
 'use client';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
+import React, { useEffect, useState } from 'react';
 import { PopoverPicker } from '../../_component/PopoverPicker';
 import { postRecipy, updateRecipe } from '@/data-access/recipies';
 import { useUser } from '@clerk/nextjs';
@@ -64,7 +65,7 @@ export default function UpdateRecipy() {
     fetchData();
     setError(null);
   }, [refresh]);
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const items = document.querySelectorAll('.enterAnimations');
       const tl = gsap.timeline();

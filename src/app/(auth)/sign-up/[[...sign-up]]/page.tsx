@@ -12,7 +12,8 @@ import {
   Eye,
   EyeOff,
 } from 'lucide-react';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
+import { useRef, useState } from 'react';
 import { ClerkAPIError } from '@clerk/types';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
 import { useEffect } from 'react';
@@ -56,7 +57,7 @@ export default function Page() {
       paused: true,
     })
   );
-  React.useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const layer1 = document.getElementById('layer1');
       let value;
@@ -85,7 +86,7 @@ export default function Page() {
     });
     return () => ctx.revert();
   }, [username, errorsUsername]);
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');
@@ -149,7 +150,7 @@ export default function Page() {
     });
     return () => ctx.revert();
   }, [password, errorsPassword]);
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');

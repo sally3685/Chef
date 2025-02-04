@@ -4,7 +4,8 @@ import Image from 'next/image';
 import Menu from './Menu';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/dist/ScrollTrigger';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import { useParams } from 'next/navigation';
 import styles from '@/app/assets/css/content.module.css';
 import Link from 'next/link';
@@ -46,7 +47,7 @@ export default function Home() {
   const cardRef3 = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       let mm = gsap.matchMedia();
 

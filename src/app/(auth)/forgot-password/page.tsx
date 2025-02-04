@@ -4,7 +4,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/navigation';
 
 import { CircleCheck, CirclePlus, Eye, EyeOff } from 'lucide-react';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import { useEffect } from 'react';
 import { ClerkAPIError } from '@clerk/types';
 import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
@@ -47,7 +48,7 @@ export default function ForgotPasswordPage() {
     })
   );
 
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const layer1 = document.getElementById('layer1');
 
@@ -82,7 +83,7 @@ export default function ForgotPasswordPage() {
     return () => ctx.revert();
   }, [email, errorsEmail]);
 
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const layer3 = document.getElementById('layer3');
       let value;
@@ -111,7 +112,7 @@ export default function ForgotPasswordPage() {
     });
     return () => ctx.revert();
   }, [password, errorsPassword]);
-  useLayoutEffect(() => {
+  useAnimation(() => {
     const layer3 = document.getElementById('layer3');
     const layer4 = document.getElementById('layer4');
     let ctx = gsap.context(() => {

@@ -1,5 +1,5 @@
 'use client';
-import { useLayoutEffect } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import { ReactNode } from 'react';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/dist/ScrollTrigger';
@@ -16,7 +16,7 @@ export default function Detaileslayout({
   writeReviews: React.ReactNode;
   foodImage: React.ReactNode;
 }) {
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       const sec = document.querySelectorAll('.section');
       // gsap.defaults({ ease: 'ease.in' });

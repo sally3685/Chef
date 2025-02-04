@@ -1,8 +1,8 @@
 'use client';
-import { useEffect, useLayoutEffect } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import { animateAuthEnter } from '@/app/animation';
 export default function Template({ children }: { children: React.ReactNode }) {
-  useLayoutEffect(() => {
+  useAnimation(() => {
     animateAuthEnter();
   }, []);
   return <>{children}</>;

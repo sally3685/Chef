@@ -8,14 +8,14 @@ import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 import { Ingredients, TimeForCooking } from '@prisma/client';
 import { getOneRecipy } from '@/data-access/recipies';
 import Loading from '@/app/[typeId]/loading';
-import { useLayoutEffect } from 'react';
+import { useAnimation } from '@/helpers/useAnimation';
 import ErrorPage from '@/app/[typeId]/error';
 const foodimage = () => {
   const img = useRef<HTMLDivElement | null>(null);
 
   gsap.registerPlugin(ScrollTrigger);
 
-  useLayoutEffect(() => {
+  useAnimation(() => {
     let ctx = gsap.context(() => {
       gsap.fromTo(
         '.wood',
