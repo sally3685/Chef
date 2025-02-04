@@ -11,7 +11,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const pageType = usePathname();
   const router = useRouter();
   useAnimation(() => {
-    animateAuthEnter();
+    if (typeof window !== 'undefined') {
+      animateAuthEnter();
+    }
     // animateAuth(pageType, router);
   }, []);
 
