@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 // Improved version of https://usehooks.com/useOnClickOutside/
 const useClickOutside = (ref: any, handler: any) => {
   useAnimation(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof document !== 'undefined') {
       let startedInside = false;
       let startedWhenMounted = false;
 

@@ -41,7 +41,7 @@ export default function SignInForm() {
     })
   );
   useAnimation(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof document !== 'undefined') {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');
       let ctx = gsap.context(() => {
@@ -74,7 +74,7 @@ export default function SignInForm() {
   }, [email, errorsEmail]);
 
   useAnimation(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof document !== 'undefined') {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');
       let ctx = gsap.context(() => {

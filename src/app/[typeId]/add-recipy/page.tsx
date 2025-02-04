@@ -63,7 +63,7 @@ export default function AddRecipy() {
     setSteps(updatedSteps);
   };
   useAnimation(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof document !== 'undefined') {
       const items = document.querySelectorAll('.enterAnimations');
       let ctx = gsap.context(() => {
         const tl = gsap.timeline();

@@ -5,7 +5,7 @@ import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.share
 import ScrollSmoother from 'gsap/all';
 
 export const animateAuthOut = (href: string, router: AppRouterInstance) => {
-  if (typeof window !== 'undefined') {
+  if (typeof document !== 'undefined') {
     const items = document.querySelectorAll('.enterAnimation');
     const items1 = document.querySelectorAll('.enterAnimation1');
     const tl = gsap.timeline();
@@ -43,7 +43,7 @@ export const animateAuthOut = (href: string, router: AppRouterInstance) => {
   }
 };
 export const animateAuthEnter = () => {
-  if (typeof window !== 'undefined') {
+  if (typeof document !== 'undefined') {
     const items = document.querySelectorAll('.enterAnimation');
     const items1 = document.querySelectorAll('.enterAnimation1');
     const tl = gsap.timeline();

@@ -104,7 +104,7 @@ export default function Menu({ typeId }: { typeId: string }) {
   }, [typeId, refresh, pathname]);
 
   useAnimation(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof document !== 'undefined') {
       const items = document.querySelectorAll('.item');
       let ctx = gsap.context(() => {
         items.forEach((item) => {
@@ -127,7 +127,7 @@ export default function Menu({ typeId }: { typeId: string }) {
   //   return () => ctx.revert();
   // }, []);
   useAnimation(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof document !== 'undefined') {
       const states = document.querySelectorAll('.tomato');
       const items = document.querySelectorAll('.wood');
       const section = document.querySelector('.section');

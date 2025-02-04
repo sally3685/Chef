@@ -37,7 +37,7 @@ const verifyEmail = () => {
     })
   );
   useAnimation(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof document !== 'undefined') {
       const layer1 = document.getElementById('layer1');
       let ctx = gsap.context(() => {
         let value;
