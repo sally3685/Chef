@@ -16,7 +16,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+    >
       <html lang="ar" dir="rtl" suppressHydrationWarning>
         {/* <Post/> */}
         <link rel="icon" type="image/svg+xml" href="/logo.svg" />
