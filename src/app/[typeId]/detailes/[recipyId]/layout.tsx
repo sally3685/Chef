@@ -17,7 +17,7 @@ export default function Detaileslayout({
   foodImage: React.ReactNode;
 }) {
   useAnimation(() => {
-    if (document) {
+    if (typeof window !== 'undefined') {
       const sec = document.querySelectorAll('.section');
       let ctx = gsap.context(() => {
         // gsap.defaults({ ease: 'ease.in' });

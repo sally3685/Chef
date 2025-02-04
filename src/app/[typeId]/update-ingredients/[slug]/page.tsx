@@ -270,7 +270,7 @@ export default function UpdateIngredient() {
   const [deletedPhoto, setDeletedPhoto] = React.useState(0);
 
   useAnimation(() => {
-    if (document) {
+    if (typeof window !== 'undefined') {
       const items = document.querySelectorAll('.enterAnimations');
       let ctx = gsap.context(() => {
         const tl = gsap.timeline();

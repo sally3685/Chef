@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
   );
 
   useAnimation(() => {
-    if (document) {
+    if (typeof window !== 'undefined') {
       const layer1 = document.getElementById('layer1');
       let ctx = gsap.context(() => {
         let value;
@@ -85,7 +85,7 @@ export default function ForgotPasswordPage() {
   }, [email, errorsEmail]);
 
   useAnimation(() => {
-    if (document) {
+    if (typeof window !== 'undefined') {
       const layer3 = document.getElementById('layer3');
       let ctx = gsap.context(() => {
         let value;
@@ -116,7 +116,7 @@ export default function ForgotPasswordPage() {
     }
   }, [password, errorsPassword]);
   useAnimation(() => {
-    if (document) {
+    if (typeof window !== 'undefined') {
       const layer3 = document.getElementById('layer3');
       const layer4 = document.getElementById('layer4');
       let ctx = gsap.context(() => {

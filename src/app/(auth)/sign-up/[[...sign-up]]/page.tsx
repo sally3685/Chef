@@ -58,7 +58,7 @@ export default function Page() {
     })
   );
   useAnimation(() => {
-    if (document) {
+    if (typeof window !== 'undefined') {
       const layer1 = document.getElementById('layer1');
       let ctx = gsap.context(() => {
         let value;
@@ -89,7 +89,7 @@ export default function Page() {
     }
   }, [username, errorsUsername]);
   useAnimation(() => {
-    if (document) {
+    if (typeof window !== 'undefined') {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');
       const layer3 = document.getElementById('layer3');
@@ -159,7 +159,7 @@ export default function Page() {
     }
   }, [password, errorsPassword]);
   useAnimation(() => {
-    if (document) {
+    if (typeof window !== 'undefined') {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');
       const layer3 = document.getElementById('layer3');

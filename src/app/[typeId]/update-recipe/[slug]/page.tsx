@@ -66,7 +66,7 @@ export default function UpdateRecipy() {
     setError(null);
   }, [refresh]);
   useAnimation(() => {
-    if (document) {
+    if (typeof window !== 'undefined') {
       const items = document.querySelectorAll('.enterAnimations');
       let ctx = gsap.context(() => {
         const tl = gsap.timeline();
