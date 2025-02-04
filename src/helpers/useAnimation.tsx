@@ -1,3 +1,3 @@
 import { useLayoutEffect, useEffect } from 'react';
 export const useAnimation =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+  typeof document !== 'undefined' ? useLayoutEffect : useEffect;
