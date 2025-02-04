@@ -66,27 +66,29 @@ export default function UpdateRecipy() {
     setError(null);
   }, [refresh]);
   useAnimation(() => {
-    let ctx = gsap.context(() => {
+    if (document) {
       const items = document.querySelectorAll('.enterAnimations');
-      const tl = gsap.timeline();
-      tl.fromTo(
-        items,
-        {
-          y: -50,
-          opacity: 0,
-        },
-        {
-          y: 0,
-          stagger: 0.2,
-          ease: 'back.out',
-          opacity: 1,
-          position: 'relative',
-        }
-      );
-    });
+      let ctx = gsap.context(() => {
+        const tl = gsap.timeline();
+        tl.fromTo(
+          items,
+          {
+            y: -50,
+            opacity: 0,
+          },
+          {
+            y: 0,
+            stagger: 0.2,
+            ease: 'back.out',
+            opacity: 1,
+            position: 'relative',
+          }
+        );
+      });
 
-    titleRef?.current?.focus();
-    return () => ctx.revert();
+      titleRef?.current?.focus();
+      return () => ctx.revert();
+    }
   }, [isFetchLoad]);
   const deletePhoto = async () => {
     setFetchLoad(true);

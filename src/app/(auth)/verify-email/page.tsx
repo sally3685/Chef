@@ -37,27 +37,29 @@ const verifyEmail = () => {
     })
   );
   useAnimation(() => {
-    let ctx = gsap.context(() => {
+    if (document) {
       const layer1 = document.getElementById('layer1');
-      let value;
-      if (CODE_REGEX.test(code) && !errorsCode) {
-        value = '8.5rem';
-      } else {
-        value = '2.25rem';
-      }
-      tl.current = gsap
-        .timeline({
-          defaults: {
-            duration: 1.5,
-            ease: 'bounce',
-          },
-        })
-        .to(layer1, {
-          top: value,
-        });
-      setValidCode(CODE_REGEX.test(code));
-    });
-    return () => ctx.revert();
+      let ctx = gsap.context(() => {
+        let value;
+        if (CODE_REGEX.test(code) && !errorsCode) {
+          value = '8.5rem';
+        } else {
+          value = '2.25rem';
+        }
+        tl.current = gsap
+          .timeline({
+            defaults: {
+              duration: 1.5,
+              ease: 'bounce',
+            },
+          })
+          .to(layer1, {
+            top: value,
+          });
+        setValidCode(CODE_REGEX.test(code));
+      });
+      return () => ctx.revert();
+    }
   }, [code, errorsCode]);
 
   const handleVerify = async (e: React.FormEvent) => {

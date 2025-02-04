@@ -17,39 +17,41 @@ export default function Detaileslayout({
   foodImage: React.ReactNode;
 }) {
   useAnimation(() => {
-    let ctx = gsap.context(() => {
+    if (document) {
       const sec = document.querySelectorAll('.section');
-      // gsap.defaults({ ease: 'ease.in' });
-      const animateSections = () => {
-        gsap.defaults({ ease: 'power1.out' });
-        gsap.fromTo(
-          sec,
-          {
-            scale: 0,
-          },
-          {
-            scale: 1,
-            ease: 'power1.out',
-            stagger: {
-              amount: 0.5,
-              grid: 'auto',
-              from: 'start',
+      let ctx = gsap.context(() => {
+        // gsap.defaults({ ease: 'ease.in' });
+        const animateSections = () => {
+          gsap.defaults({ ease: 'power1.out' });
+          gsap.fromTo(
+            sec,
+            {
+              scale: 0,
             },
-          }
-        );
-      };
+            {
+              scale: 1,
+              ease: 'power1.out',
+              stagger: {
+                amount: 0.5,
+                grid: 'auto',
+                from: 'start',
+              },
+            }
+          );
+        };
 
-      // Initial animation on page load
-      animateSections();
-
-      // Add event listener for window resize
-      window.addEventListener('resize', () => {
-        // Reset the scale to 0 before animating again
-        gsap.set(sec, { scale: 0 });
+        // Initial animation on page load
         animateSections();
+
+        // Add event listener for window resize
+        window.addEventListener('resize', () => {
+          // Reset the scale to 0 before animating again
+          gsap.set(sec, { scale: 0 });
+          animateSections();
+        });
       });
-    });
-    return () => ctx.revert();
+      return () => ctx.revert();
+    }
   }, []);
 
   return (

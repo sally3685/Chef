@@ -41,83 +41,87 @@ export default function SignInForm() {
     })
   );
   useAnimation(() => {
-    let ctx = gsap.context(() => {
+    if (document) {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');
-      let value;
-      if (EMAIL_REGEX.test(email) && !errorsEmail) {
-        value = '7rem';
-        if (PWD_REGEX.test(password) && !errorsPassword) {
-          value = '12.65rem';
-          // if (PWD_REGEX.test(password) && !errorsPassword) {
-          //   value = '18.2rem';
-          // }
+      let ctx = gsap.context(() => {
+        let value;
+        if (EMAIL_REGEX.test(email) && !errorsEmail) {
+          value = '7rem';
+          if (PWD_REGEX.test(password) && !errorsPassword) {
+            value = '12.65rem';
+            // if (PWD_REGEX.test(password) && !errorsPassword) {
+            //   value = '18.2rem';
+            // }
+          }
+        } else {
+          value = '2.25rem';
         }
-      } else {
-        value = '2.25rem';
-      }
-      tl.current = gsap
-        .timeline({
-          defaults: {
-            duration: 1.5,
-            ease: 'bounce',
-          },
-        })
-        .to(layer1, {
-          top: value,
-        });
-      setValidEmail(EMAIL_REGEX.test(email));
-    });
-    return () => ctx.revert();
+        tl.current = gsap
+          .timeline({
+            defaults: {
+              duration: 1.5,
+              ease: 'bounce',
+            },
+          })
+          .to(layer1, {
+            top: value,
+          });
+        setValidEmail(EMAIL_REGEX.test(email));
+      });
+      return () => ctx.revert();
+    }
   }, [email, errorsEmail]);
 
   useAnimation(() => {
-    let ctx = gsap.context(() => {
+    if (document) {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');
-      setValidPwd(PWD_REGEX.test(password));
-      let valueE;
-      let valueU;
-      if (PWD_REGEX.test(password) && !errorsPassword) {
-        valueE = '8.55rem';
-        valueU = '12.65rem';
+      let ctx = gsap.context(() => {
+        setValidPwd(PWD_REGEX.test(password));
+        let valueE;
+        let valueU;
+        if (PWD_REGEX.test(password) && !errorsPassword) {
+          valueE = '8.55rem';
+          valueU = '12.65rem';
 
-        // if (PWD_REGEX.test(password) && !errorsPassword) {
-        //   valueE = '14rem';
-        //   valueU = '18.2rem';
-        // }
-        if (!EMAIL_REGEX.test(email) || errorsEmail) {
-          valueU = '2.25rem';
+          // if (PWD_REGEX.test(password) && !errorsPassword) {
+          //   valueE = '14rem';
+          //   valueU = '18.2rem';
+          // }
+          if (!EMAIL_REGEX.test(email) || errorsEmail) {
+            valueU = '2.25rem';
+          }
+        } else {
+          valueE = '3rem';
+          valueU = '7rem';
+
+          if (!EMAIL_REGEX.test(email) || errorsEmail) {
+            valueU = '2.25rem';
+          }
         }
-      } else {
-        valueE = '3rem';
-        valueU = '7rem';
+        tl.current = gsap
+          .timeline({
+            defaults: {
+              duration: 1.5,
+              ease: 'bounce',
+            },
+          })
+          .to(layer1, {
+            top: valueU,
 
-        if (!EMAIL_REGEX.test(email) || errorsEmail) {
-          valueU = '2.25rem';
-        }
-      }
-      tl.current = gsap
-        .timeline({
-          defaults: {
-            duration: 1.5,
-            ease: 'bounce',
-          },
-        })
-        .to(layer1, {
-          top: valueU,
-
-          delay: 0.02,
-        })
-        .to(
-          layer2,
-          {
-            top: valueE,
-          },
-          '='
-        );
-    });
-    return () => ctx.revert();
+            delay: 0.02,
+          })
+          .to(
+            layer2,
+            {
+              top: valueE,
+            },
+            '='
+          );
+      });
+      return () => ctx.revert();
+    }
   }, [password, errorsPassword]);
 
   const handleSubmit = async (e: React.FormEvent) => {

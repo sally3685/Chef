@@ -4,12 +4,13 @@ import { useEffect } from 'react';
 import { animateAuthEnter } from '../animation';
 import { usePathname, useRouter } from 'next/navigation';
 import { CircleCheck } from 'lucide-react';
+import { useAnimation } from '@/helpers/useAnimation';
 // import { animatePageOut } from '@/app/animation';
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pageType = usePathname();
   const router = useRouter();
-  useEffect(() => {
+  useAnimation(() => {
     animateAuthEnter();
     // animateAuth(pageType, router);
   }, []);

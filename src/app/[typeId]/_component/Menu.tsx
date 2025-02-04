@@ -104,73 +104,77 @@ export default function Menu({ typeId }: { typeId: string }) {
   }, [typeId, refresh, pathname]);
 
   useAnimation(() => {
-    let ctx = gsap.context(() => {
+    if (document) {
       const items = document.querySelectorAll('.item');
-      items.forEach((item) => {
-        gsap.fromTo(
-          item,
-          {
-            opacity: 0.5,
-          },
-          {
-            opacity: 1,
-          }
-        );
+      let ctx = gsap.context(() => {
+        items.forEach((item) => {
+          gsap.fromTo(
+            item,
+            {
+              opacity: 0.5,
+            },
+            {
+              opacity: 1,
+            }
+          );
+        });
       });
-    });
-    return () => ctx.revert();
+      return () => ctx.revert();
+    }
   }, [type]);
   // useAnimation(() => {
   //   let ctx = gsap.context(() => {});
   //   return () => ctx.revert();
   // }, []);
   useAnimation(() => {
-    let ctx = gsap.context(() => {
+    if (document) {
       const states = document.querySelectorAll('.tomato');
       const items = document.querySelectorAll('.wood');
       const section = document.querySelector('.section');
-      gsap.registerPlugin(ScrollTrigger, ScrollSmoother, Flip);
+      let ctx = gsap.context(() => {
+        gsap.registerPlugin(ScrollTrigger, ScrollSmoother, Flip);
 
-      ScrollTrigger.refresh();
+        ScrollTrigger.refresh();
 
-      states.forEach((tomatoElement, index) => {
-        tomatoElement?.classList.remove(...classes[index]);
-      });
-      // flipCtx = gsap.context(() => {
-      const allStates = gsap.utils.toArray('.tomato') as HTMLElement[];
+        states.forEach((tomatoElement, index) => {
+          tomatoElement?.classList.remove(...classes[index]);
+        });
+        // flipCtx = gsap.context(() => {
+        const allStates = gsap.utils.toArray('.tomato') as HTMLElement[];
 
-      const state = Flip.getState(allStates);
-      states.forEach((tomatoElement, index) => {
-        tomatoElement?.classList.add(...classes[index]);
-      });
-      const flip = Flip.from(state, {
-        duration: 2,
-        ease: 'power1.inOut',
-        // stagger: 0.1,
-        rotate: 400,
-      });
-      ScrollTrigger.create({
-        trigger: '.ggg',
-        start: 'top center',
-        end: '+=20%',
-        animation: flip,
-        // pin: true,
-        scrub: true,
-      });
-      items.forEach((item) => {
-        gsap.to(item, {
-          rotate: 360,
-          opacity: 1,
-          scrollTrigger: {
-            scroller: section,
-            trigger: item,
-            start: 'top bottom',
-            scrub: true,
-          },
+        const state = Flip.getState(allStates);
+        states.forEach((tomatoElement, index) => {
+          tomatoElement?.classList.add(...classes[index]);
+        });
+        const flip = Flip.from(state, {
+          duration: 2,
+          ease: 'power1.inOut',
+          // stagger: 0.1,
+          rotate: 400,
+        });
+        ScrollTrigger.create({
+          trigger: '.ggg',
+          start: 'top center',
+          end: '+=20%',
+          animation: flip,
+          // pin: true,
+          scrub: true,
+        });
+        items.forEach((item) => {
+          gsap.to(item, {
+            rotate: 360,
+            opacity: 1,
+            scrollTrigger: {
+              scroller: section,
+              trigger: item,
+              start: 'top bottom',
+              scrub: true,
+            },
+          });
         });
       });
-    });
-    return () => ctx.revert();
+      return () => ctx.revert();
+    }
   }, [isLoaded, loa]);
   useEffect(() => {
     setTypeFocus(true);

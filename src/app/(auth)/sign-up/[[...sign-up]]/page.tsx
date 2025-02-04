@@ -58,146 +58,156 @@ export default function Page() {
     })
   );
   useAnimation(() => {
-    let ctx = gsap.context(() => {
+    if (document) {
       const layer1 = document.getElementById('layer1');
-      let value;
-      if (USER_REGEX.test(username) && !errorsUsername) {
-        value = '7rem';
-        if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
-          value = '12.65rem';
-          if (PWD_REGEX.test(password) && !errorsPassword) {
-            value = '18.2rem';
+      let ctx = gsap.context(() => {
+        let value;
+        if (USER_REGEX.test(username) && !errorsUsername) {
+          value = '7rem';
+          if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
+            value = '12.65rem';
+            if (PWD_REGEX.test(password) && !errorsPassword) {
+              value = '18.2rem';
+            }
           }
+        } else {
+          value = '2.25rem';
         }
-      } else {
-        value = '2.25rem';
-      }
-      tl.current = gsap
-        .timeline({
-          defaults: {
-            duration: 1.5,
-            ease: 'bounce',
-          },
-        })
-        .to(layer1, {
-          top: value,
-        });
-      setValidName(USER_REGEX.test(username));
-    });
-    return () => ctx.revert();
+        tl.current = gsap
+          .timeline({
+            defaults: {
+              duration: 1.5,
+              ease: 'bounce',
+            },
+          })
+          .to(layer1, {
+            top: value,
+          });
+        setValidName(USER_REGEX.test(username));
+      });
+      return () => ctx.revert();
+    }
   }, [username, errorsUsername]);
   useAnimation(() => {
-    let ctx = gsap.context(() => {
+    if (document) {
       const layer1 = document.getElementById('layer1');
       const layer2 = document.getElementById('layer2');
       const layer3 = document.getElementById('layer3');
-      setValidPwd(PWD_REGEX.test(password));
-      let valueE;
-      let valueU;
-      let valueP;
-      if (PWD_REGEX.test(password) && !errorsPassword) {
-        valueE = '14rem';
-        valueU = '18.2rem';
-        valueP = '8.5rem';
-
-        if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
-          valueE = '3rem';
-          if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
-          else valueU = '7rem';
-        } else {
-          if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
-        }
-      } else {
-        valueE = '8.55rem';
-        valueU = '12.65rem';
-        valueP = '3rem';
-
-        if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
-          valueE = '3rem';
-          if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
-          else valueU = '7rem';
-        } else {
-          if (!USER_REGEX.test(username) || errorsUsername) valueU = '2.25rem';
-        }
-      }
-      tl.current = gsap
-        .timeline({
-          defaults: {
-            duration: 1.5,
-            ease: 'bounce',
-          },
-        })
-        .to(layer1, {
-          top: valueU,
-          delay: 0.02,
-        })
-        .to(
-          layer2,
-          {
-            top: valueE,
-
-            delay: 0.04,
-          },
-          '='
-        )
-        .to(
-          layer3,
-          {
-            top: valueP,
-          },
-          '='
-        );
-    });
-    return () => ctx.revert();
-  }, [password, errorsPassword]);
-  useAnimation(() => {
-    let ctx = gsap.context(() => {
-      const layer1 = document.getElementById('layer1');
-      const layer2 = document.getElementById('layer2');
-      const layer3 = document.getElementById('layer3');
-      setValidEmail(EMAIL_REGEX.test(emailAddress));
-      let valueE;
-      let valueU;
-      if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
-        valueE = '8.55rem';
-        valueU = '12.65rem';
-
+      let ctx = gsap.context(() => {
+        setValidPwd(PWD_REGEX.test(password));
+        let valueE;
+        let valueU;
+        let valueP;
         if (PWD_REGEX.test(password) && !errorsPassword) {
           valueE = '14rem';
           valueU = '18.2rem';
-        }
-        if (!USER_REGEX.test(username) || errorsUsername) {
-          valueU = '2.25rem';
-        }
-      } else {
-        valueE = '3rem';
-        valueU = '7rem';
+          valueP = '8.5rem';
 
-        if (!USER_REGEX.test(username) || errorsUsername) {
-          valueU = '2.25rem';
-        }
-      }
-      tl.current = gsap
-        .timeline({
-          defaults: {
-            duration: 1.5,
-            ease: 'bounce',
-          },
-        })
-        .to(layer1, {
-          top: valueU,
+          if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
+            valueE = '3rem';
+            if (!USER_REGEX.test(username) || errorsUsername)
+              valueU = '2.25rem';
+            else valueU = '7rem';
+          } else {
+            if (!USER_REGEX.test(username) || errorsUsername)
+              valueU = '2.25rem';
+          }
+        } else {
+          valueE = '8.55rem';
+          valueU = '12.65rem';
+          valueP = '3rem';
 
-          delay: 0.02,
-        })
-        .to(
-          layer2,
-          {
-            top: valueE,
-          },
-          '='
-        );
-    });
-    return () => ctx.revert();
+          if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
+            valueE = '3rem';
+            if (!USER_REGEX.test(username) || errorsUsername)
+              valueU = '2.25rem';
+            else valueU = '7rem';
+          } else {
+            if (!USER_REGEX.test(username) || errorsUsername)
+              valueU = '2.25rem';
+          }
+        }
+        tl.current = gsap
+          .timeline({
+            defaults: {
+              duration: 1.5,
+              ease: 'bounce',
+            },
+          })
+          .to(layer1, {
+            top: valueU,
+            delay: 0.02,
+          })
+          .to(
+            layer2,
+            {
+              top: valueE,
+
+              delay: 0.04,
+            },
+            '='
+          )
+          .to(
+            layer3,
+            {
+              top: valueP,
+            },
+            '='
+          );
+      });
+      return () => ctx.revert();
+    }
+  }, [password, errorsPassword]);
+  useAnimation(() => {
+    if (document) {
+      const layer1 = document.getElementById('layer1');
+      const layer2 = document.getElementById('layer2');
+      const layer3 = document.getElementById('layer3');
+      let ctx = gsap.context(() => {
+        setValidEmail(EMAIL_REGEX.test(emailAddress));
+        let valueE;
+        let valueU;
+        if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
+          valueE = '8.55rem';
+          valueU = '12.65rem';
+
+          if (PWD_REGEX.test(password) && !errorsPassword) {
+            valueE = '14rem';
+            valueU = '18.2rem';
+          }
+          if (!USER_REGEX.test(username) || errorsUsername) {
+            valueU = '2.25rem';
+          }
+        } else {
+          valueE = '3rem';
+          valueU = '7rem';
+
+          if (!USER_REGEX.test(username) || errorsUsername) {
+            valueU = '2.25rem';
+          }
+        }
+        tl.current = gsap
+          .timeline({
+            defaults: {
+              duration: 1.5,
+              ease: 'bounce',
+            },
+          })
+          .to(layer1, {
+            top: valueU,
+
+            delay: 0.02,
+          })
+          .to(
+            layer2,
+            {
+              top: valueE,
+            },
+            '='
+          );
+      });
+      return () => ctx.revert();
+    }
   }, [emailAddress, errorsEmail]);
 
   const toggleVisibility = () => {
