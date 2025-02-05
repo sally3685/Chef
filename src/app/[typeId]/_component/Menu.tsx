@@ -160,22 +160,22 @@ export default function Menu({ typeId }: { typeId: string }) {
           // pin: true,
           scrub: true,
         });
-        items.forEach((item) => {
-          gsap.to(item, {
-            rotate: 360,
-            opacity: 1,
-            scrollTrigger: {
-              scroller: section,
-              trigger: item,
-              start: 'top bottom',
-              scrub: true,
-            },
-          });
-        });
+        // items.forEach((item) => {
+        //   gsap.to(item, {
+        //     rotate: 360,
+        //     opacity: 1,
+        //     scrollTrigger: {
+        //       scroller: section,
+        //       trigger: item,
+        //       start: 'top bottom',
+        //       scrub: true,
+        //     },
+        //   });
+        // });
       });
       return () => ctx.revert();
     }
-  }, [isLoaded, loa]);
+  });
   useEffect(() => {
     setTypeFocus(true);
     typeRef.current?.focus();
@@ -215,7 +215,7 @@ export default function Menu({ typeId }: { typeId: string }) {
                       placeholder={
                         searchType === 'userName'
                           ? 'محمد القباقبجي'
-                          : 'متبل حمص'
+                          : 'متبل بانجان'
                       }
                       onChange={(e) => setType(e.target.value)}
                       type="text"
@@ -354,7 +354,9 @@ export default function Menu({ typeId }: { typeId: string }) {
               w-[178px] h-[178px]  wood relative right-[92px] top-[-9px]`}
                                   src={item ? `${item.src}` : ''}
                                   alt={item ? item.title : ''}
-                                  unoptimized
+                                  loader={() => {
+                                    return item.src;
+                                  }}
                                   width="251"
                                   height="543"
                                 ></Image>

@@ -174,11 +174,22 @@ export default function Header() {
             className={`listItems font-medium hover:scale-[1.3]   ${
               pathName.split('/')[1] === ''
                 ? 'text-[#f3a738] dark:text-[#f3e37c]'
-                : ''
+                : 'text-black dark:text-white'
             }`}
           >
             الصفحة الرئيسية
           </a>
+          {isSignedIn ? (
+            <UserButton />
+          ) : (
+            <Link
+              href={`/sign-up`}
+              className={`listItems font-medium hover:scale-[1.3] text-black  dark:text-white
+              `}
+            >
+              انشاء حساب
+            </Link>
+          )}
           {food.map((type, ti) => (
             <Link
               ref={listItems}
@@ -187,7 +198,7 @@ export default function Header() {
               className={`listItems font-medium hover:scale-[1.3]   ${
                 pathName.split('/')[1] === type.params
                   ? 'text-[#f3a738] dark:text-[#f3e37c]'
-                  : ''
+                  : 'text-black  dark:text-white'
               }`}
             >
               {type.title}

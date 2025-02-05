@@ -188,7 +188,9 @@ export default function Ingredient() {
                                 alt={name}
                                 width={100}
                                 height={100}
-                                unoptimized
+                                loader={() => {
+                                  return src;
+                                }}
                                 className="w-[25%] sm:w-[100px]"
                               ></Image>
                             ) : (
@@ -300,7 +302,10 @@ export default function Ingredient() {
                         recipe?.ingredients[parseInt(caloies as string)]
                           ?.src as string
                       }
-                      unoptimized
+                      loader={() => {
+                        return recipe.ingredients[parseInt(caloies as string)]
+                          .src as string;
+                      }}
                       alt={
                         recipe?.ingredients[parseInt(caloies as string)]?.name
                       }

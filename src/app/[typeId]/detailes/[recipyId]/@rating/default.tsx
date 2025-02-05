@@ -49,7 +49,12 @@ export default function Rating() {
       const slug1 = decodeURIComponent(recipyId as string);
       const a = await getOneRecipy(slug1);
       if (a.status === 500) setError(a.message as string);
-      else setRecipe(a.recipy as reci);
+      else {
+        setRecipe(a.recipy as reci);
+        const rate = await GetRecipeRate(a?.recipy?.id as string);
+        if (rate.status === 200) setreciperate(rate.averageRating);
+        else setError(rate.message as string);
+      }
       setFetchLoad(false);
       // setItemsArray(a);
     };
@@ -61,19 +66,21 @@ export default function Rating() {
   const [reciperate, setreciperate] = useState<number>();
 
   const handleClick = async (index: number) => {
-    const newRatio = ratio.map((_, i) => (i <= index ? '1' : ''));
+    if (user && isLoaded && recipe) {
+      const newRatio = ratio.map((_, i) => (i <= index ? '1' : ''));
 
-    const res = await PostUserRate(
-      user?.id as string,
-      recipe?.id as string,
-      index
-    );
-    if (res.status === 500) setError(res.message);
-    const rate = await GetRecipeRate(user?.id as string, recipe?.id as string);
-    if (res.status === 500) setError(res.message);
-    else {
-      setreciperate(rate.averageRating);
-      setRatio(newRatio);
+      const res = await PostUserRate(
+        user?.id as string,
+        recipe?.id as string,
+        index
+      );
+      if (res.status === 500) setError(res.message);
+      const rate = await GetRecipeRate(recipe?.id as string);
+      if (rate.status === 500) setError(rate.message as string);
+      else {
+        setreciperate(rate.averageRating);
+        setRatio(newRatio);
+      }
     }
   };
 
@@ -83,12 +90,6 @@ export default function Rating() {
         if (user && recipe) {
           const s = await GetUserRate(user.id as string, recipe.id as string);
           if (s.status === 200) setcurrentuserrate(s?.res);
-          else setError(s.message as string);
-          const rate = await GetRecipeRate(
-            user.id as string,
-            recipe.id as string
-          );
-          if (rate.status === 200) setreciperate(rate.averageRating);
           else setError(s.message as string);
         }
       };
@@ -246,7 +247,19 @@ export default function Rating() {
   return (
     <>
       <div className="flex flex-col gap-4 dark:text-white justify-center items-center text-black text-xl sm:text-2xl text-center font-bold">
-        <h2>تقييم المستخدمين{reciperate}%</h2>
+        <h2>تقييم المستخدمين {reciperate}%</h2>
+
+        {isFetchLoad ? (
+          <>
+            <h3 className="text-sm">يتم تحميل التقييم</h3>
+          </>
+        ) : !isFetchLoad && isLoaded && !user ? (
+          <>
+            <h3 className="text-sm">سجل دخول لتقيم الوصفة 🧡</h3>
+          </>
+        ) : (
+          <></>
+        )}
         <div className="w-full flex gap-4 justify-center items-center overflow-visible h-[40px]">
           {ratio.map((p, index) => (
             <svg
@@ -258,9 +271,13 @@ export default function Rating() {
               className={p === '1' ? 'svg' : ''}
               onClick={() => handleClick(index)}
             >
+              {/* #635f5f */}
               <path
-                className={p === '1' ? 'star' : ''}
-                style={p === '1' ? { fill: '#fbef6e' } : { fill: '#2f2c2c' }}
+                className={
+                  p === '1'
+                    ? 'star dark:fill-[#fbef6e] fill-[#f7bf49]'
+                    : 'dark:fill-[#2f2c2c] fill-[#635f5f]'
+                }
                 d="M26.285,2.486l5.407,10.956c0.376,0.762,1.103,1.29,1.944,1.412l12.091,1.757
 	c2.117,0.308,2.963,2.91,1.431,4.403l-8.749,8.528c-0.608,0.593-0.886,1.448-0.742,2.285l2.065,12.042
 	c0.362,2.109-1.852,3.717-3.746,2.722l-10.814-5.685c-0.752-0.395-1.651-0.395-2.403,0l-10.814,5.685
@@ -290,102 +307,121 @@ export default function Rating() {
                 }}
               />
               <circle
-                className={p === '1' ? 'c1 c' : ''}
+                className={
+                  p === '1'
+                    ? 'c1 c dark:fill-[#fbef6e] fill-[#f7bf49]'
+                    : 'dark:fill-[#2f2c2c] fill-[#635f5f]'
+                }
                 r="1"
                 cx="25"
                 cy="25"
-                fill={p === '1' ? '#fbef6e' : '#2f2c2c'}
                 style={{
                   filter: 'dropShadow(1px 1px 2px rgba(252, 240, 113, 0.7))',
                 }}
               />
               <circle
-                className={p === '1' ? 'c2 c' : ''}
+                className={
+                  p === '1'
+                    ? 'c2 c dark:fill-[#fbef6e] fill-[#f7bf49]'
+                    : 'dark:fill-[#2f2c2c] fill-[#635f5f]'
+                }
                 r="1"
                 cx="25"
                 cy="25"
-                fill={p === '1' ? '#fbef6e' : '#2f2c2c'}
+                // fill={p === '1' ? '#fbef6e' : '#2f2c2c'}
                 style={{
                   filter: 'dropShadow(0px 0px 2px rgba(252, 240, 113, 0.7))',
                 }}
               />
               <circle
-                className={p === '1' ? 'c3 c' : ''}
+                className={
+                  p === '1'
+                    ? 'c3 c dark:fill-[#fbef6e] fill-[#f7bf49]'
+                    : 'dark:fill-[#2f2c2c] fill-[#635f5f]'
+                }
                 r="1"
                 cx="25"
                 cy="25"
-                fill={p === '1' ? '#fbef6e' : '#2f2c2c'}
+                // fill={p === '1' ? '#fbef6e' : '#2f2c2c'}
                 style={{
                   filter: 'dropShadow(0px 0px 2px rgba(252, 240, 113, 0.7))',
                 }}
               />
               <circle
-                className={p === '1' ? 'c4 c' : ''}
+                className={
+                  p === '1'
+                    ? 'c4 c dark:fill-[#fbef6e] fill-[#f7bf49]'
+                    : 'dark:fill-[#2f2c2c] fill-[#635f5f]'
+                }
                 r="1"
                 cx="25"
                 cy="25"
-                fill={p === '1' ? '#fbef6e' : '#2f2c2c'}
+                // fill={p === '1' ? '#fbef6e' : '#2f2c2c'}
                 style={{
                   filter: 'dropShadow(0px 0px 2px rgba(252, 240, 113, 0.7))',
                 }}
               />
               <circle
-                className={p === '1' ? 'c5 c' : ''}
+                className={
+                  p === '1'
+                    ? 'c5 c dark:fill-[#fbef6e] fill-[#f7bf49]'
+                    : 'dark:fill-[#2f2c2c] fill-[#635f5f]'
+                }
                 r="1"
                 cx="25"
                 cy="25"
-                fill={p === '1' ? '#fbef6e' : '#2f2c2c'}
+                // fill={p === '1' ? '#fbef6e' : '#2f2c2c'}
                 style={{
                   filter: 'dropShadow(0px 0px 2px rgba(252, 240, 113, 0.7))',
                 }}
               />
               <line
-                className="lid2"
+                className={
+                  p === '1'
+                    ? 'lid2 dark:stroke-[#fbef6e] stroke-[#f7bf49]'
+                    : 'lid2 dark:stroke-[#2f2c2c] stroke-[#635f5f]'
+                }
                 x1="28"
                 y1="17"
                 x2="32"
                 y2="17"
-                style={
-                  p === '1'
-                    ? { strokeWidth: 2.5, stroke: '#fbef6e' }
-                    : { strokeWidth: 2.5, stroke: '#2f2c2c' }
-                }
+                style={p === '1' ? { strokeWidth: 2.5 } : { strokeWidth: 2.5 }}
               />
               <line
-                className="lid22"
+                className={
+                  p === '1'
+                    ? 'lid22 dark:stroke-[#fbef6e] stroke-[#f7bf49]'
+                    : 'lid22 dark:stroke-[#2f2c2c] stroke-[#635f5f]'
+                }
                 x1="28"
                 y1="23"
                 x2="32"
                 y2="23"
-                style={
-                  p === '1'
-                    ? { strokeWidth: 2.5, stroke: '#fbef6e' }
-                    : { strokeWidth: 2.5, stroke: '#2f2c2c' }
-                }
+                style={p === '1' ? { strokeWidth: 2.5 } : { strokeWidth: 2.5 }}
               />
               <line
-                className="lid1"
+                className={
+                  p === '1'
+                    ? 'lid1 dark:stroke-[#fbef6e] stroke-[#f7bf49]'
+                    : 'lid1 dark:stroke-[#2f2c2c] stroke-[#635f5f]'
+                }
                 x1="15"
                 y1="17"
                 x2="20"
                 y2="17"
-                style={
-                  p === '1'
-                    ? { strokeWidth: 2.5, stroke: '#fbef6e' }
-                    : { strokeWidth: 2.5, stroke: '#2f2c2c' }
-                }
+                style={p === '1' ? { strokeWidth: 2.5 } : { strokeWidth: 2.5 }}
               />
               <line
-                className="lid11"
+                className={
+                  p === '1'
+                    ? 'lid11 dark:stroke-[#fbef6e] stroke-[#f7bf49]'
+                    : 'lid11 dark:stroke-[#2f2c2c] stroke-[#635f5f]'
+                }
                 x1="15"
                 y1="23"
                 x2="20"
                 y2="23"
-                style={
-                  p === '1'
-                    ? { strokeWidth: 2.5, stroke: '#fbef6e' }
-                    : { strokeWidth: 2.5, stroke: '#2f2c2c' }
-                }
+                style={p === '1' ? { strokeWidth: 2.5 } : { strokeWidth: 2.5 }}
               />
               <path
                 className="smile"

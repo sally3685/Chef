@@ -40,38 +40,50 @@ export default function SignInForm() {
       paused: true,
     })
   );
+  const [emailValuePrev, setEmailValuePrev] = useState('2.25rem');
+  const [pswValuePrev, setPswValuePrev] = useState('3rem');
+  useAnimation(() => {
+    if (EMAIL_REGEX.test(email) !== validEmail) {
+      setValidEmail(EMAIL_REGEX.test(email));
+    }
+  }, [email, errorsEmail]);
+  useAnimation(() => {
+    if (PWD_REGEX.test(password) !== validPwd) {
+      setValidPwd(PWD_REGEX.test(password));
+    }
+  }, [password, errorsPassword]);
   useAnimation(() => {
     if (typeof document !== 'undefined') {
       const layer1 = document.getElementById('layer1');
-      const layer2 = document.getElementById('layer2');
       let ctx = gsap.context(() => {
-        let value;
+        let valueToE;
         if (EMAIL_REGEX.test(email) && !errorsEmail) {
-          value = '7rem';
+          valueToE = '7rem';
           if (PWD_REGEX.test(password) && !errorsPassword) {
-            value = '12.65rem';
-            // if (PWD_REGEX.test(password) && !errorsPassword) {
-            //   value = '18.2rem';
-            // }
+            valueToE = '12.65rem';
           }
         } else {
-          value = '2.25rem';
+          valueToE = '2.25rem';
         }
-        tl.current = gsap
-          .timeline({
-            defaults: {
-              duration: 1.5,
-              ease: 'bounce',
-            },
-          })
-          .to(layer1, {
-            top: value,
-          });
+        gsap.defaults({
+          duration: 1.5,
+          ease: 'bounce',
+        });
+        gsap.fromTo(
+          layer1,
+          {
+            top: emailValuePrev,
+          },
+          {
+            top: valueToE,
+          }
+        );
+        setEmailValuePrev(valueToE);
         setValidEmail(EMAIL_REGEX.test(email));
       });
       return () => ctx.revert();
     }
-  }, [email, errorsEmail]);
+  }, [validEmail]);
 
   useAnimation(() => {
     if (typeof document !== 'undefined') {
@@ -79,25 +91,20 @@ export default function SignInForm() {
       const layer2 = document.getElementById('layer2');
       let ctx = gsap.context(() => {
         setValidPwd(PWD_REGEX.test(password));
-        let valueE;
-        let valueU;
+        let valueToE;
+        let valueToU;
         if (PWD_REGEX.test(password) && !errorsPassword) {
-          valueE = '8.55rem';
-          valueU = '12.65rem';
-
-          // if (PWD_REGEX.test(password) && !errorsPassword) {
-          //   valueE = '14rem';
-          //   valueU = '18.2rem';
-          // }
+          valueToE = '8.55rem';
+          valueToU = '12.65rem';
           if (!EMAIL_REGEX.test(email) || errorsEmail) {
-            valueU = '2.25rem';
+            valueToU = '2.25rem';
           }
         } else {
-          valueE = '3rem';
-          valueU = '7rem';
+          valueToE = '3rem';
+          valueToU = '7rem';
 
           if (!EMAIL_REGEX.test(email) || errorsEmail) {
-            valueU = '2.25rem';
+            valueToU = '2.25rem';
           }
         }
         tl.current = gsap
@@ -107,22 +114,33 @@ export default function SignInForm() {
               ease: 'bounce',
             },
           })
-          .to(layer1, {
-            top: valueU,
+          .fromTo(
+            layer1,
+            {
+              top: emailValuePrev,
+            },
+            {
+              top: valueToU,
 
-            delay: 0.02,
-          })
-          .to(
+              delay: 0.02,
+            }
+          )
+          .fromTo(
             layer2,
             {
-              top: valueE,
+              top: pswValuePrev,
+            },
+            {
+              top: valueToE,
             },
             '='
           );
+        setPswValuePrev(valueToE);
+        setEmailValuePrev(valueToU);
       });
       return () => ctx.revert();
     }
-  }, [password, errorsPassword]);
+  }, [validPwd]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -183,7 +201,7 @@ export default function SignInForm() {
   // Display a form to capture the user's email and password
   return (
     <>
-      <main className="flex gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row flex-col-reverse">
+      <main className="flex gap-4 lg:gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row flex-col-reverse">
         <div className="lg:w-1/2 w-[85%]">
           <>
             <h1 className="enterAnimation relative text-3xl font-medium mb-4 text-center">
@@ -225,7 +243,7 @@ export default function SignInForm() {
                 </label>
                 <input
                   ref={emailRef}
-                  className="w-full !rounded text-[#151517] bg-white p-2"
+                  className="w-full !rounded text-[#151517] dark:bg-white bg-[#d3b577b5] p-2"
                   id="email"
                   type="email"
                   name="email"
@@ -285,7 +303,7 @@ export default function SignInForm() {
                 <input
                   ref={passdwordRef}
                   autoComplete="current-password"
-                  className="w-full rounded !text-[#151517]  bg-white p-2"
+                  className="w-full rounded !text-[#151517] dark:bg-white bg-[#d3b577b5] p-2"
                   id="password"
                   type={!passwordEye ? 'password' : 'text'}
                   name="password"
@@ -302,7 +320,7 @@ export default function SignInForm() {
                   onClick={() => {
                     setPasswordEye(!passwordEye);
                   }}
-                  className="w-[30px] h-[30px] absolute left-0 top-1/2"
+                  className="w-[30px] h-[30px] absolute left-[12%] lg:left-0 top-1/2"
                 >
                   {!passwordEye ? (
                     <EyeOff color="black" />
@@ -344,13 +362,13 @@ export default function SignInForm() {
               </div>
             </form>
 
-            <section className="enterAnimation relative flex space-x-4 text-lg text-[#d8d8d8] justify-center items-center">
+            <section className="enterAnimation relative flex space-x-4 text-lg dark:text-[#d8d8d8] text-[#272727] justify-center items-center">
               <p>ليس لديك حساب ? </p>
 
               <TransportLink href={'/sign-up'} label={'انشاء حساب'} />
               {/* <Link href="/sign-up">انشاء حساب</Link> */}
             </section>
-            <section className="enterAnimation flex space-x-4 text-lg text-[#d8d8d8] justify-center items-center relative">
+            <section className="enterAnimation flex space-x-4 text-lg dark:text-[#d8d8d8] text-[#272727] justify-center items-center relative">
               <p>نسيت كلمة السر ? </p>
 
               <TransportLink href={'/forgot-password'} label={'اضفط هنا'} />
@@ -371,10 +389,7 @@ export default function SignInForm() {
             } lg:flex`}
           >
             {!validEmail ? (
-              <span
-                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                style={{ border: '2px solid white' }}
-              >
+              <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                 1
               </span>
             ) : (
@@ -383,7 +398,9 @@ export default function SignInForm() {
             <p
               id="emailnotes"
               className={
-                !validEmail ? 'text-white w-3/4' : 'text-[#808080] w-3/4'
+                !validEmail
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080] w-3/4'
               }
             >
               يحتوي على علامة @ ويحتوي على أحرف قبل @
@@ -396,10 +413,7 @@ export default function SignInForm() {
             } lg:flex`}
           >
             {!validPwd ? (
-              <span
-                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                style={{ border: '2px solid white' }}
-              >
+              <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                 2
               </span>
             ) : (
@@ -408,7 +422,9 @@ export default function SignInForm() {
             <p
               id="passwordnotes"
               className={
-                !validPwd ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'
+                !validPwd
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080]  w-3/4'
               }
             >
               يجب أن يحتوي على 8 إلى 24 حرفًا، ويشمل حرفًا كبيرًا وحرفًا صغيرًا،
@@ -421,17 +437,18 @@ export default function SignInForm() {
           >
             {/* lg:top-52 top-3  */}
             {!submit ? (
-              <span
-                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                style={{ border: '2px solid white' }}
-              >
+              <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                 3
               </span>
             ) : (
               <CircleCheck color="grey" />
             )}
             <p
-              className={!submit ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'}
+              className={
+                !submit
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080]  w-3/4'
+              }
             >
               اضغط على متابعة وفي حال ظهور رسائل خطأ صحح الاخطاء واضغط مجددا
               للتحقق
@@ -444,7 +461,11 @@ export default function SignInForm() {
             }`}
           >
             <p
-              className={!submit ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'}
+              className={
+                !submit
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080]  w-3/4'
+              }
             >
               املأ الحقول واضغط على متابعة وفي حال ظهور رسائل خطأ صحح الاخطاء
               واضغط مجددا للتحقق

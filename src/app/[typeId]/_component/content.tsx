@@ -140,25 +140,14 @@ export default function Home() {
       else {
         if (!a.recipe) setFetchedTitle('لايوجد وصفات');
         else {
-          setFetchedRating(a?.recipe?.rating as number);
+          setFetchedRating(a.rate as number);
+          setFetchedImage(a.recipe?.src as string);
+          setFetchedTitle(a.recipe?.title as string);
+          const res2 = await getUserById(a.recipe.authorId as string);
 
-          const res = await getOneRecipyById(a?.recipe?.recipeId as string);
-          if (res.status === 500) setError(res.message as string);
+          if (res2.status === 500) setError(res2.message as string);
           else {
-            const res1 = await getUserWithMostRecipes();
-
-            if (res1.status === 404) setFetchedTitle(res1.message as string);
-            else if (res1.status === 500) setError(res1.message as string);
-            else {
-              const res2 = await getUserById(res1.userId as string);
-
-              if (res2.status === 500) setError(res2.message as string);
-              else {
-                setFetchedUserName(res2.userName as string);
-              }
-            }
-            setFetchedImage(res.recipe?.src as string);
-            setFetchedTitle(res.recipe?.title as string);
+            setFetchedUserName(res2.userName as string);
           }
         }
       }
@@ -299,15 +288,19 @@ export default function Home() {
                       width="251"
                       height="543"
                     ></Image>
-                    <Image
-                      className={`
+                    {fetchedImage && (
+                      <Image
+                        className={`
               w-[158px] h-[45%]   absolute`}
-                      src={fetchedImage ? fetchedImage : ''}
-                      alt={fetchedTitle ? fetchedTitle : ''}
-                      unoptimized
-                      width="251"
-                      height="543"
-                    ></Image>
+                        src={fetchedImage ? fetchedImage : ''}
+                        alt={fetchedTitle ? fetchedTitle : ''}
+                        loader={() => {
+                          return fetchedImage;
+                        }}
+                        width="251"
+                        height="543"
+                      ></Image>
+                    )}
                     <h2 className="sm:text-xl text-lg text-white font-bold dark:text-[#151517]">
                       {fetchedTitle} بتقييم{' '}
                       <span className="text-white dark:text-[#907d38]  ">

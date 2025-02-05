@@ -23,7 +23,7 @@ export default function WriteReview() {
   const [reviews, setReviews] = useState<ss[]>();
   const [sub, setSub] = useState(false);
   const [subdel, setSubdel] = useState(false);
-  const [fa, setFa] = useState(false);
+  const [isComments, setIsComments] = useState(false);
   //طعم لذيذ ومذهل، لم أتذوق مثله من قبل!
 
   type ss = {
@@ -72,8 +72,6 @@ export default function WriteReview() {
   const [error, setError] = useState<null | string>(null);
   const [isFetchLoad, setFetchLoad] = useState(true);
   useEffect(() => {
-    // setItemsArray([]);
-
     const fetchData = async () => {
       setFetchLoad(true);
       const slug1 = decodeURIComponent(recipyId as string);
@@ -82,9 +80,15 @@ export default function WriteReview() {
       if (a.status === 500) {
         setError(a.message as string);
       } else {
-        const s = await GetComments();
+        const s = await GetComments(recipe?.id as string);
         if (s.status === 200) {
           setRecipe(a.recipy as reci);
+          s.reviews?.map((review) => {
+            if (review.comments.length > 0) {
+              setIsComments(true);
+              return;
+            }
+          });
           setReviews(s.reviews as ss[] | undefined);
         } else {
           setError(s.message as string);
@@ -98,15 +102,17 @@ export default function WriteReview() {
   }, [refresh]);
 
   const deletecomment = async (id: number) => {
-    setFetchLoad(true);
-    const res = await deleteComment(
-      user?.id as string,
-      recipe?.id as string,
-      id
-    );
-    if (res.status === 500) setError(res.message as string);
-    else setRefresh(!refresh);
-    setFetchLoad(false);
+    if (user && isLoaded) {
+      setFetchLoad(true);
+      const res = await deleteComment(
+        user?.id as string,
+        recipe?.id as string,
+        id
+      );
+      if (res.status === 500) setError(res.message as string);
+      else setRefresh(!refresh);
+      setFetchLoad(false);
+    }
   };
   return (
     <>
@@ -138,9 +144,13 @@ export default function WriteReview() {
       >
         {write === 'true' ? (
           <div className="flex flex-col justify-center items-center gap-4 h-full relative w-[100%] p-2">
-            <h2 className="text-xl sm:text-2xl text-center text-white dark:text-[#eea243] font-bold">
-              شاركنا رأيك😊
-            </h2>
+            {isLoaded && !user ? (
+              ''
+            ) : (
+              <h2 className="text-xl sm:text-2xl text-center text-white dark:text-[#eea243] font-bold">
+                شاركنا رأيك😊
+              </h2>
+            )}
             {sub ? (
               <p className="text-center text-white dark:text-[#eea243] font-bold w-full">
                 ...يتم معالجة الطلب الرجاء الانتظار
@@ -257,7 +267,7 @@ export default function WriteReview() {
                       }}
                     ></ErrorPage>
                   </>
-                ) : !isFetchLoad && reviews && reviews.length > 0 ? (
+                ) : !isFetchLoad && reviews && isComments ? (
                   reviews.map(
                     (review) =>
                       review.comments &&
@@ -295,7 +305,7 @@ export default function WriteReview() {
                         </div>
                       ))
                   )
-                ) : !isFetchLoad && (!reviews || reviews.length === 0) ? (
+                ) : !isFetchLoad && (!reviews || isComments === false) ? (
                   <p className="text-lg sm:text-xl border border-t-0 border-r-0 border-l-0 p-2 border-b-gray-200">
                     لا يوجد تعليقات بعد 😔
                   </p>

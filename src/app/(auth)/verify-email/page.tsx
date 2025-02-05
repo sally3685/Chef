@@ -36,6 +36,12 @@ const verifyEmail = () => {
       paused: true,
     })
   );
+  const [codeValuePrev, setCodeValuePrev] = useState('2.25rem');
+  useAnimation(() => {
+    if (CODE_REGEX.test(code) !== ValidCode) {
+      setValidCode(CODE_REGEX.test(code));
+    }
+  }, [code, errorsCode]);
   useAnimation(() => {
     if (typeof document !== 'undefined') {
       const layer1 = document.getElementById('layer1');
@@ -46,21 +52,25 @@ const verifyEmail = () => {
         } else {
           value = '2.25rem';
         }
-        tl.current = gsap
-          .timeline({
-            defaults: {
-              duration: 1.5,
-              ease: 'bounce',
-            },
-          })
-          .to(layer1, {
+        gsap.defaults({
+          duration: 1.5,
+          ease: 'bounce',
+        });
+        gsap.fromTo(
+          layer1,
+          {
+            top: codeValuePrev,
+          },
+          {
             top: value,
-          });
+          }
+        );
+        setCodeValuePrev(value);
         setValidCode(CODE_REGEX.test(code));
       });
       return () => ctx.revert();
     }
-  }, [code, errorsCode]);
+  }, [ValidCode]);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +126,7 @@ const verifyEmail = () => {
   };
   return (
     <>
-      <main className="flex gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row flex-col-reverse">
+      <main className="flex gap-4 lg:gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row flex-col-reverse">
         <div className="lg:w-1/2 w-[85%]">
           <h1 className="enterAnimation relative text-3xl font-medium mb-4 text-center">
             تاكيد حسابك
@@ -157,7 +167,7 @@ const verifyEmail = () => {
               </label>
               <input
                 ref={codeRef}
-                className="w-full !rounded bg-white text-[#151517] p-2"
+                className="w-full !rounded dark:bg-white bg-[#d3b577b5] text-[#151517] p-2"
                 id="code"
                 type="code"
                 name="code"
@@ -206,10 +216,7 @@ const verifyEmail = () => {
             } lg:flex`}
           >
             {!ValidCode ? (
-              <span
-                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                style={{ border: '2px solid white' }}
-              >
+              <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                 1
               </span>
             ) : (
@@ -218,7 +225,9 @@ const verifyEmail = () => {
             <p
               id="codenotes"
               className={
-                !ValidCode ? 'text-white w-3/4' : 'text-[#808080] w-3/4'
+                !ValidCode
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080] w-3/4'
               }
             >
               يحتوي على علامة @ ويحتوي على أحرف قبل @

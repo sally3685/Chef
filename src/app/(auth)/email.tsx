@@ -23,9 +23,11 @@ export default function OauthSignIn() {
     <>
       <section className="my-10 w-full h-1 flex justify-center items-center">
         <hr className="w-full h-1" />
-        <span className="absolute bg-[#151517] w-20 text-center">أو</span>
+        <span className="absolute dark:bg-[#151517] bg-white w-20 text-center">
+          أو
+        </span>
       </section>
-      <div className="bg-[#ffffff]  text-black text-lg p-3 w-full rounded justify-center items-center flex gap-4">
+      <div className="dark:bg-[#ffffff] bg-[#b25518] text-white dark:text-black text-lg p-3 w-full rounded justify-center items-center flex gap-4">
         <div className="w-[30px] h-[30px] bg-contain bg-center bg-no-repeat bg-[url(/google.svg)]"></div>
         <button onClick={() => signInWith('oauth_google')}>
           استخدام حساب غوغل

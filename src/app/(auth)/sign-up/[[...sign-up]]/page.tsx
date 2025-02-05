@@ -57,22 +57,87 @@ export default function Page() {
       paused: true,
     })
   );
+  const [userValuePrev, setUserValuePrev] = useState('2.25rem');
+  const [emailValuePrev, setEmailValuePrev] = useState('3rem');
+  const [pswValuePrev, setPswValuePrev] = useState('3rem');
+  useAnimation(() => {
+    if (USER_REGEX.test(username) !== validName) {
+      setValidName(USER_REGEX.test(username));
+    }
+  }, [username, errorsUsername]);
+  useAnimation(() => {
+    if (EMAIL_REGEX.test(emailAddress) !== validEmail) {
+      setValidEmail(EMAIL_REGEX.test(emailAddress));
+    }
+  }, [emailAddress, errorsEmail]);
+  useAnimation(() => {
+    if (PWD_REGEX.test(password) !== validPwd) {
+      setValidPwd(PWD_REGEX.test(password));
+    }
+  }, [password, errorsPassword]);
   useAnimation(() => {
     if (typeof document !== 'undefined') {
       const layer1 = document.getElementById('layer1');
       let ctx = gsap.context(() => {
-        let value;
+        let valueTo;
+
         if (USER_REGEX.test(username) && !errorsUsername) {
-          value = '7rem';
+          valueTo = '7rem';
           if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
-            value = '12.65rem';
+            valueTo = '12.65rem';
             if (PWD_REGEX.test(password) && !errorsPassword) {
-              value = '18.2rem';
+              valueTo = '18.2rem';
             }
           }
         } else {
-          value = '2.25rem';
+          valueTo = '2.25rem';
         }
+        gsap.defaults({
+          duration: 1.5,
+          ease: 'bounce',
+        });
+        gsap.fromTo(
+          layer1,
+          {
+            top: userValuePrev,
+          },
+          {
+            top: valueTo,
+          }
+        );
+        setUserValuePrev(valueTo);
+      });
+      return () => ctx.revert();
+    }
+  }, [validName]);
+  useAnimation(() => {
+    if (typeof document !== 'undefined') {
+      const layer1 = document.getElementById('layer1');
+      const layer2 = document.getElementById('layer2');
+      let ctx = gsap.context(() => {
+        setValidEmail(EMAIL_REGEX.test(emailAddress));
+        let valueToE;
+        let valueToU;
+        if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
+          valueToE = '8.55rem';
+          valueToU = '12.65rem';
+
+          if (PWD_REGEX.test(password) && !errorsPassword) {
+            valueToE = '14rem';
+            valueToU = '18.2rem';
+          }
+          if (!USER_REGEX.test(username) || errorsUsername) {
+            valueToU = '2.25rem';
+          }
+        } else {
+          valueToE = '3rem';
+          valueToU = '7rem';
+
+          if (!USER_REGEX.test(username) || errorsUsername) {
+            valueToU = '2.25rem';
+          }
+        }
+
         tl.current = gsap
           .timeline({
             defaults: {
@@ -80,14 +145,33 @@ export default function Page() {
               ease: 'bounce',
             },
           })
-          .to(layer1, {
-            top: value,
-          });
-        setValidName(USER_REGEX.test(username));
+          .fromTo(
+            layer1,
+            {
+              top: userValuePrev,
+            },
+            {
+              top: valueToU,
+
+              delay: 0.02,
+            }
+          )
+          .fromTo(
+            layer2,
+            {
+              top: emailValuePrev,
+            },
+            {
+              top: valueToE,
+            },
+            '='
+          );
+        setUserValuePrev(valueToU);
+        setEmailValuePrev(valueToE);
       });
       return () => ctx.revert();
     }
-  }, [username, errorsUsername]);
+  }, [validEmail]);
   useAnimation(() => {
     if (typeof document !== 'undefined') {
       const layer1 = document.getElementById('layer1');
@@ -95,36 +179,36 @@ export default function Page() {
       const layer3 = document.getElementById('layer3');
       let ctx = gsap.context(() => {
         setValidPwd(PWD_REGEX.test(password));
-        let valueE;
-        let valueU;
-        let valueP;
+        let valueToE;
+        let valueToU;
+        let valueToP;
         if (PWD_REGEX.test(password) && !errorsPassword) {
-          valueE = '14rem';
-          valueU = '18.2rem';
-          valueP = '8.5rem';
+          valueToE = '14rem';
+          valueToU = '18.2rem';
+          valueToP = '8.5rem';
 
           if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
-            valueE = '3rem';
+            valueToE = '3rem';
             if (!USER_REGEX.test(username) || errorsUsername)
-              valueU = '2.25rem';
-            else valueU = '7rem';
+              valueToU = '2.25rem';
+            else valueToU = '7rem';
           } else {
             if (!USER_REGEX.test(username) || errorsUsername)
-              valueU = '2.25rem';
+              valueToU = '2.25rem';
           }
         } else {
-          valueE = '8.55rem';
-          valueU = '12.65rem';
-          valueP = '3rem';
+          valueToE = '8.55rem';
+          valueToU = '12.65rem';
+          valueToP = '3rem';
 
           if (!EMAIL_REGEX.test(emailAddress) || errorsEmail) {
-            valueE = '3rem';
+            valueToE = '3rem';
             if (!USER_REGEX.test(username) || errorsUsername)
-              valueU = '2.25rem';
-            else valueU = '7rem';
+              valueToU = '2.25rem';
+            else valueToU = '7rem';
           } else {
             if (!USER_REGEX.test(username) || errorsUsername)
-              valueU = '2.25rem';
+              valueToU = '2.25rem';
           }
         }
         tl.current = gsap
@@ -134,81 +218,39 @@ export default function Page() {
               ease: 'bounce',
             },
           })
-          .to(layer1, {
-            top: valueU,
-            delay: 0.02,
-          })
-          .to(
-            layer2,
+          .fromTo(
+            layer1,
+            { top: userValuePrev },
             {
-              top: valueE,
+              top: valueToU,
+              delay: 0.02,
+            }
+          )
+          .fromTo(
+            layer2,
+            { top: emailValuePrev },
+            {
+              top: valueToE,
 
               delay: 0.04,
             },
             '='
           )
-          .to(
+          .fromTo(
             layer3,
+            { top: pswValuePrev },
             {
-              top: valueP,
+              top: valueToP,
             },
             '='
           );
+        setPswValuePrev(valueToP);
+        setEmailValuePrev(valueToE);
+        setUserValuePrev(valueToU);
       });
       return () => ctx.revert();
     }
-  }, [password, errorsPassword]);
-  useAnimation(() => {
-    if (typeof document !== 'undefined') {
-      const layer1 = document.getElementById('layer1');
-      const layer2 = document.getElementById('layer2');
-      const layer3 = document.getElementById('layer3');
-      let ctx = gsap.context(() => {
-        setValidEmail(EMAIL_REGEX.test(emailAddress));
-        let valueE;
-        let valueU;
-        if (EMAIL_REGEX.test(emailAddress) && !errorsEmail) {
-          valueE = '8.55rem';
-          valueU = '12.65rem';
-
-          if (PWD_REGEX.test(password) && !errorsPassword) {
-            valueE = '14rem';
-            valueU = '18.2rem';
-          }
-          if (!USER_REGEX.test(username) || errorsUsername) {
-            valueU = '2.25rem';
-          }
-        } else {
-          valueE = '3rem';
-          valueU = '7rem';
-
-          if (!USER_REGEX.test(username) || errorsUsername) {
-            valueU = '2.25rem';
-          }
-        }
-        tl.current = gsap
-          .timeline({
-            defaults: {
-              duration: 1.5,
-              ease: 'bounce',
-            },
-          })
-          .to(layer1, {
-            top: valueU,
-
-            delay: 0.02,
-          })
-          .to(
-            layer2,
-            {
-              top: valueE,
-            },
-            '='
-          );
-      });
-      return () => ctx.revert();
-    }
-  }, [emailAddress, errorsEmail]);
+  }, [validPwd]);
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -289,7 +331,7 @@ export default function Page() {
   // Display the initial sign-up form to capture the email and password
   return (
     <>
-      <main className="flex gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row flex-col-reverse">
+      <main className="flex gap-4 lg:gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row flex-col-reverse">
         <div className="lg:w-1/2 w-[85%]">
           <>
             <h1 className="enterAnimation text-3xl font-medium mb-4 text-center">
@@ -333,7 +375,7 @@ export default function Page() {
                 <input
                   autoComplete="off"
                   placeholder="john doe"
-                  className=" w-full rounded p-2  bg-white text-[#151517]"
+                  className=" w-full rounded p-2 dark:bg-white bg-[#d3b577b5] text-[#151517]"
                   id="username"
                   type="text"
                   name="username"
@@ -401,7 +443,7 @@ export default function Page() {
                 </label>
                 <input
                   ref={emailRef}
-                  className="w-full !rounded  bg-white text-[#151517] p-2"
+                  className="w-full !rounded dark:bg-white bg-[#d3b577b5] text-[#151517] p-2"
                   id="email"
                   type="email"
                   name="email"
@@ -464,7 +506,7 @@ export default function Page() {
                 <input
                   ref={passdwordRef}
                   autoComplete="new-password"
-                  className="w-full rounded !text-[#151517]  bg-white p-2"
+                  className="w-full rounded !text-[#151517] dark:bg-white bg-[#d3b577b5] p-2"
                   id="password"
                   type={!passwordEye ? 'password' : 'text'}
                   name="password"
@@ -481,7 +523,7 @@ export default function Page() {
                   onClick={() => {
                     setPasswordEye(!passwordEye);
                   }}
-                  className="w-[30px] h-[30px] absolute left-0 top-1/2"
+                  className="w-[30px] h-[30px] absolute left-[12%] lg:left-0 top-1/2"
                 >
                   {!passwordEye ? (
                     <EyeOff color="black" />
@@ -528,7 +570,7 @@ export default function Page() {
   Show a loading state to the user
 */}
 
-            <section className="enterAnimation flex space-x-4 text-lg text-[#d8d8d8] justify-center items-center">
+            <section className="enterAnimation flex space-x-4 text-lg dark:text-[#d8d8d8] text-[#272727] justify-center items-center">
               <p> لديك حساب مسبقا ؟ </p>
               <TransportLink href={'/sign-in'} label={'تسجيل دخول'} />
               {/* <Link href="/sign-in"> تسجيل دخول </Link> */}
@@ -548,10 +590,7 @@ export default function Page() {
             } lg:flex`}
           >
             {!validName ? (
-              <span
-                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                style={{ border: '2px solid white' }}
-              >
+              <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                 1
               </span>
             ) : (
@@ -560,7 +599,9 @@ export default function Page() {
             <p
               id="usernote"
               className={
-                !validName ? 'text-white w-3/4' : 'text-[#808080] w-3/4'
+                !validName
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080] w-3/4'
               }
             >
               يجب أن يتراوح بين 4 إلى 24 حرفًا، ويبدأ دائمًا بحرف، ويقبل بالحروف
@@ -574,10 +615,7 @@ export default function Page() {
             } lg:flex`}
           >
             {!validEmail ? (
-              <span
-                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                style={{ border: '2px solid white' }}
-              >
+              <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                 2
               </span>
             ) : (
@@ -586,7 +624,9 @@ export default function Page() {
             <p
               id="emailnotes"
               className={
-                !validEmail ? 'text-white w-3/4' : 'text-[#808080] w-3/4'
+                !validEmail
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080] w-3/4'
               }
             >
               يحتوي على علامة @ ويحتوي على أحرف قبل @
@@ -599,10 +639,7 @@ export default function Page() {
             } lg:flex`}
           >
             {!validPwd ? (
-              <span
-                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                style={{ border: '2px solid white' }}
-              >
+              <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                 3
               </span>
             ) : (
@@ -611,7 +648,9 @@ export default function Page() {
             <p
               id="passwordnotes"
               className={
-                !validPwd ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'
+                !validPwd
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080]  w-3/4'
               }
             >
               يجب أن يحتوي على 8 إلى 24 حرفًا، ويشمل حرفًا كبيرًا وحرفًا صغيرًا،
@@ -623,10 +662,7 @@ export default function Page() {
             className={`enterAnimation1 hidden lg:flex justify-center lg:justify-end absolute h-[32px] top-3 lg:top-[13rem]  gap-6 items-center w-full `}
           >
             {!submit ? (
-              <span
-                className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                style={{ border: '2px solid white' }}
-              >
+              <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                 4
               </span>
             ) : (
@@ -634,7 +670,11 @@ export default function Page() {
             )}
             <p
               id="usernote"
-              className={!submit ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'}
+              className={
+                !submit
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080]  w-3/4'
+              }
             >
               اضغط على متابعة وفي حال ظهور رسائل خطأ صحح الاخطاء واضغط مجددا
               للتحقق
@@ -647,7 +687,11 @@ export default function Page() {
             }`}
           >
             <p
-              className={!submit ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'}
+              className={
+                !submit
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080]  w-3/4'
+              }
             >
               املأ الحقول واضغط على متابعة وفي حال ظهور رسائل خطأ صحح الاخطاء
               واضغط مجددا للتحقق

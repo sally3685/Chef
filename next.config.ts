@@ -12,3 +12,17 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+// images: {
+//   remotePatterns: [
+//     {
+//       protocol: 'https',
+//       hostname: 'assets.example.com',
+//       port: '',
+//       pathname: '/account123/**',
+//       search: '',
+//     },
+//   ],
+// },
+// images: {
+//   domains: ['example.com'],
+// },

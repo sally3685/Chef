@@ -8,10 +8,13 @@ import { Ingredients, TimeForCooking } from '@prisma/client';
 import { UTApi } from 'uploadthing/server';
 import { updateUser } from './users';
 
-export const GetComments = cache(async () => {
+export const GetComments = cache(async (recipeId: string) => {
   try {
     // await prisma.user_Recipe.deleteMany();
     const res = await prisma.user_Recipe.findMany({
+      where: {
+        recipeId: recipeId,
+      },
       include: {
         user: true,
       },

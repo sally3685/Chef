@@ -42,13 +42,24 @@ export default function Detaileslayout({
 
         // Initial animation on page load
         animateSections();
+        let prevWidth = window.innerWidth; // Store the initial window width
+
+        window.addEventListener('resize', () => {
+          let currentWidth = window.innerWidth;
+
+          if (prevWidth !== currentWidth) {
+            prevWidth = window.innerWidth;
+            gsap.set(sec, { scale: 0 });
+            animateSections();
+          }
+        });
 
         // Add event listener for window resize
-        window.addEventListener('resize', () => {
-          // Reset the scale to 0 before animating again
-          gsap.set(sec, { scale: 0 });
-          animateSections();
-        });
+        // window.addEventListener('resize', () => {
+        //   // Reset the scale to 0 before animating again
+        //   gsap.set(sec, { scale: 0 });
+        //   animateSections();
+        // });
       });
       return () => ctx.revert();
     }

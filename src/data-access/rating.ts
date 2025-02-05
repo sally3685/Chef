@@ -30,21 +30,34 @@ export const GetUserRate = cache(async (userId: string, recipeId: string) => {
 });
 export const getMostRatedRecipe = cache(async () => {
   try {
-    const recipe = await prisma.user_Recipe.findMany({
-      orderBy: {
-        rating: 'desc',
-      },
-      take: 1,
-    });
-    return { status: 200, recipe: recipe[0] };
+    let max = 0;
+    let returnedIndex = 0;
+    const recipe = await prisma.recipe.findMany();
+
+    await Promise.all(
+      recipe.map(async (recipeItem, index) => {
+        const rate = await GetRecipeRate(recipeItem.id);
+        if (
+          rate.status === 200 &&
+          rate.averageRating &&
+          rate.averageRating > max
+        ) {
+          max = rate.averageRating;
+          returnedIndex = index;
+        }
+      })
+    );
+
+    return { status: 200, recipe: recipe[returnedIndex], rate: max };
   } catch (err) {
     return {
       status: 500,
       message:
-        'حدث خطأ أثناء تحميل الوصفة الاعلى تقييما الرجاء فحص اتصال الإنترنت والمحاولة مجدداً',
+        'حدث خطأ أثناء تحميل الوصفة الأعلى تقييما. الرجاء التحقق من اتصال الإنترنت والمحاولة مجددًا',
     };
   }
 });
+
 export const getUserWithMostRecipes = async () => {
   try {
     const userWithMostRecipes = await prisma.user_Recipe.groupBy({
@@ -75,20 +88,15 @@ export const getUserWithMostRecipes = async () => {
   }
 };
 
-export const GetRecipeRate = cache(async (userId: string, recipeId: string) => {
+export const GetRecipeRate = cache(async (recipeId: string) => {
   try {
-    const id = userId + '_' + recipeId;
+    const id = recipeId;
     const res1 = await prisma.user_Recipe.aggregate({
       where: {
-        customId: id,
+        recipeId: id,
       },
       _sum: {
         rating: true,
-      },
-    });
-    const res11 = await prisma.user_Recipe.aggregate({
-      where: {
-        customId: id,
       },
       _count: {
         rating: true,
@@ -99,11 +107,9 @@ export const GetRecipeRate = cache(async (userId: string, recipeId: string) => {
         id: true,
       },
     });
-
     if (res1._sum && res2._count) {
       const averageRating =
-        (((res1._sum.rating! + res11._count.rating) / res2._count.id) * 100) /
-        5;
+        (((res1._sum.rating! + res1._count.rating) / res2._count.id) * 100) / 5;
       return { status: 200, averageRating };
     } else {
       return { status: 200, averageRating: 0 };

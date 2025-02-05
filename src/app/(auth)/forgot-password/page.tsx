@@ -47,7 +47,24 @@ export default function ForgotPasswordPage() {
       paused: true,
     })
   );
-
+  const [emailValuePrev, setEmailValuePrev] = useState('2.25rem');
+  const [pswValuePrev, setPswValuePrev] = useState('3rem');
+  const [codeValuePrev, setCodeValuePrev] = useState('2.25rem');
+  useAnimation(() => {
+    if (CODE_REGEX.test(code) !== ValidCode) {
+      setValidCode(CODE_REGEX.test(code));
+    }
+  }, [code, errorsCode]);
+  useAnimation(() => {
+    if (EMAIL_REGEX.test(email) !== validEmail) {
+      setValidEmail(EMAIL_REGEX.test(email));
+    }
+  }, [email, errorsEmail]);
+  useAnimation(() => {
+    if (PWD_REGEX.test(password) !== validPwd) {
+      setValidPwd(PWD_REGEX.test(password));
+    }
+  }, [password, errorsPassword]);
   useAnimation(() => {
     if (typeof document !== 'undefined') {
       const layer1 = document.getElementById('layer1');
@@ -68,21 +85,25 @@ export default function ForgotPasswordPage() {
             value = '8.9rem';
           }
         }
-        tl.current = gsap
-          .timeline({
-            defaults: {
-              duration: 1.5,
-              ease: 'bounce',
-            },
-          })
-          .to(layer1, {
+        gsap.defaults({
+          duration: 1.5,
+          ease: 'bounce',
+        });
+        gsap.fromTo(
+          layer1,
+          {
+            top: emailValuePrev,
+          },
+          {
             top: value,
-          });
+          }
+        );
+        setEmailValuePrev(value);
         setValidEmail(EMAIL_REGEX.test(email));
       });
       return () => ctx.revert();
     }
-  }, [email, errorsEmail]);
+  }, [validEmail]);
 
   useAnimation(() => {
     if (typeof document !== 'undefined') {
@@ -107,14 +128,21 @@ export default function ForgotPasswordPage() {
               ease: 'bounce',
             },
           })
-          .to(layer3, {
-            top: value,
-          });
+          .fromTo(
+            layer3,
+            {
+              top: pswValuePrev,
+            },
+            {
+              top: value,
+            }
+          );
+        setPswValuePrev(value);
         setValidPwd(PWD_REGEX.test(password));
       });
       return () => ctx.revert();
     }
-  }, [password, errorsPassword]);
+  }, [validPwd]);
   useAnimation(() => {
     if (typeof document !== 'undefined') {
       const layer3 = document.getElementById('layer3');
@@ -149,22 +177,33 @@ export default function ForgotPasswordPage() {
               ease: 'bounce',
             },
           })
-          .to(layer3, {
-            top: valueU,
+          .fromTo(
+            layer3,
+            {
+              top: pswValuePrev,
+            },
+            {
+              top: valueU,
 
-            delay: 0.02,
-          })
-          .to(
+              delay: 0.02,
+            }
+          )
+          .fromTo(
             layer4,
+            {
+              top: codeValuePrev,
+            },
             {
               top: valueE,
             },
             '='
           );
+        setPswValuePrev(valueU);
+        setCodeValuePrev(valueE);
       });
       return () => ctx.revert();
     }
-  }, [code, errorsCode]);
+  }, [ValidCode]);
 
   const { isSignedIn } = useAuth();
   const { isLoaded, signIn, setActive } = useSignIn();
@@ -287,7 +326,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <main className="flex gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row flex-col-reverse">
+    <main className="flex gap-4 lg:gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row flex-col-reverse">
       <div className="lg:w-1/2 w-[85%]">
         <h1 className="enterAnimation relative text-3xl font-medium mb-4 text-center">
           نسيت كلمة المرور
@@ -327,7 +366,7 @@ export default function ForgotPasswordPage() {
                 </label>
                 <input
                   ref={emailRef}
-                  className="w-full !rounded text-[#151517] p-2 bg-white"
+                  className="w-full !rounded text-[#151517] p-2 dark:bg-white bg-[#d3b577b5]"
                   id="email"
                   type="email"
                   name="email"
@@ -403,7 +442,7 @@ export default function ForgotPasswordPage() {
                 <input
                   ref={passdwordRef}
                   autoComplete="current-password"
-                  className="w-full rounded !text-[#151517]  p-2 bg-white"
+                  className="w-full rounded !text-[#151517]  p-2 dark:bg-white bg-[#d3b577b5]"
                   id="password"
                   type="password"
                   name="password"
@@ -463,7 +502,7 @@ export default function ForgotPasswordPage() {
                 <input
                   ref={codeRef}
                   autoComplete="new-code"
-                  className="w-full rounded !text-[#151517]  p-2 bg-white"
+                  className="w-full rounded !text-[#151517]  p-2 dark:bg-white bg-[#d3b577b5]"
                   id="code"
                   type="code"
                   name="code"
@@ -538,7 +577,9 @@ export default function ForgotPasswordPage() {
             <p
               id="emailnotes"
               className={
-                !validEmail ? 'text-white w-3/4' : 'text-[#808080] w-3/4'
+                !validEmail
+                  ? 'dark:text-white text-black w-3/4'
+                  : 'text-[#808080] w-3/4'
               }
             >
               يحتوي على علامة @ ويحتوي على أحرف قبل @
@@ -552,10 +593,7 @@ export default function ForgotPasswordPage() {
               } lg:flex`}
             >
               {!validPwd ? (
-                <span
-                  className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                  style={{ border: '2px solid white' }}
-                >
+                <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                   1
                 </span>
               ) : (
@@ -564,7 +602,9 @@ export default function ForgotPasswordPage() {
               <p
                 id="passwordnotes"
                 className={
-                  !validPwd ? 'text-white w-3/4' : 'text-[#808080] w-3/4'
+                  !validPwd
+                    ? 'dark:text-white text-black w-3/4'
+                    : 'text-[#808080] w-3/4'
                 }
               >
                 يجب أن يحتوي على 8 إلى 24 حرفًا، ويشمل حرفًا كبيرًا وحرفًا
@@ -578,10 +618,7 @@ export default function ForgotPasswordPage() {
               } lg:flex`}
             >
               {!ValidCode ? (
-                <span
-                  className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%]"
-                  style={{ border: '2px solid white' }}
-                >
+                <span className="w-[24px] h-[24px] px-[6px] pb-[1px] text-center rounded-[50%] dark:border-white border-x-[2px] border-y-[2px] border-black">
                   2
                 </span>
               ) : (
@@ -590,7 +627,9 @@ export default function ForgotPasswordPage() {
               <p
                 id="codenotes"
                 className={
-                  !ValidCode ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'
+                  !ValidCode
+                    ? 'dark:text-white text-black w-3/4'
+                    : 'text-[#808080]  w-3/4'
                 }
               >
                 يجب كتابة الكود المرسل للايميل الذي ادخلته في الخطوة السابقة
@@ -615,7 +654,13 @@ export default function ForgotPasswordPage() {
           ) : (
             <CircleCheck color="grey" />
           )}
-          <p className={!submit ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'}>
+          <p
+            className={
+              !submit
+                ? 'dark:text-white text-black w-3/4'
+                : 'text-[#808080]  w-3/4'
+            }
+          >
             اضغط على متابعة وفي حال ظهور رسائل خطأ صحح الاخطاء واضغط مجددا
             للتحقق
           </p>
@@ -626,7 +671,13 @@ export default function ForgotPasswordPage() {
             !passwordFocus && !codeFocus && !emailFocus ? 'flex' : 'hidden'
           }`}
         >
-          <p className={!submit ? 'text-white w-3/4' : 'text-[#808080]  w-3/4'}>
+          <p
+            className={
+              !submit
+                ? 'dark:text-white text-black w-3/4'
+                : 'text-[#808080]  w-3/4'
+            }
+          >
             املأ الحقول واضغط على متابعة وفي حال ظهور رسائل خطأ صحح الاخطاء
             واضغط مجددا للتحقق
           </p>

@@ -22,7 +22,9 @@ body {
 .cl-internal-1una0r3 {
   background: #d3b577 !important;
 }
-
+body {
+  -webkit-overflow-scrolling: touch;
+}
 /* Include the elastic ease keyframes in the CSS */
 .try {
   grid-row: 1 / span 2 !important;
