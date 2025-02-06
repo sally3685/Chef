@@ -10,7 +10,6 @@ import { updateUser } from './users';
 
 export const GetComments = cache(async (recipeId: string) => {
   try {
-    // await prisma.user_Recipe.deleteMany();
     const res = await prisma.user_Recipe.findMany({
       where: {
         recipeId: recipeId,

@@ -258,12 +258,12 @@ export default function Menu({ typeId }: { typeId: string }) {
            w-72 h-64  item flex justify-center items-center hover:cursor-pointer  scale-[0.9]"
                         >
                           <div
-                            className="w-52 h-10 rounded-3xl bg-gradient-to-b from-[#b25518] to-[#ce8538] "
+                            className="h-[2rem] w-[11rem] rounded-lg bg-[#ce8538] "
                             title="اضف وصفتك 💛"
                           ></div>
                           <div
                             title=" اضف وصفتك 💛"
-                            className="w-10 h-48 rounded-3xl bg-gradient-to-b from-[#ce8538] to-[#b25518] transform rotate-180 absolute"
+                            className="w-[2rem] h-[10rem] rounded-lg bg-[#ce8538] transform rotate-180 absolute"
                           ></div>
                         </Link>
                       ) : (

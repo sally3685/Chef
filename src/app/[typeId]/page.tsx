@@ -62,9 +62,7 @@ export default async function Meta(props: Props) {
       {/* 
       <Home></Home>
       <Features></Features> */}
-      <Suspense fallback={<Loading></Loading>}>
-        <Menu typeId={typeIdawaited as string}></Menu>
-      </Suspense>
+      <Menu typeId={typeIdawaited as string}></Menu>
     </>
   );
 }

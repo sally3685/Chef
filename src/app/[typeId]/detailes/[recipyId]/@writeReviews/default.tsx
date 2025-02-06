@@ -80,7 +80,8 @@ export default function WriteReview() {
       if (a.status === 500) {
         setError(a.message as string);
       } else {
-        const s = await GetComments(recipe?.id as string);
+        const s = await GetComments(a.recipy?.id as string);
+
         if (s.status === 200) {
           setRecipe(a.recipy as reci);
           s.reviews?.map((review) => {
@@ -275,7 +276,7 @@ export default function WriteReview() {
                       review.comments?.map((comment, id) => (
                         <div key={id}>
                           <div className="flex-col sm:flex-row gap-[5px] flex sm:gap-2 items-center  border border-t-0 border-r-0 border-l-0 p-2 w-full">
-                            <div className="flex justify-center items-center gap-[5px]">
+                            <div className="flex justify-center items-center gap-[5px] w-full ">
                               {user?.id === review.user.clerkId ? (
                                 <span
                                   style={
