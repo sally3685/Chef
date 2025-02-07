@@ -12,7 +12,7 @@ export default function Footer() {
           <a
             href={'/SallyIsmail.pdf'}
             download="sallyIsmailResume.pdf"
-            target="https://uploadthing.com/dashboard/sally3685-personal-team/qb1kwi9db3/files"
+            target="https://qb1kwi9db3.ufs.sh/f/4nPIeTqMzPQRtb6QdtIUgSQGjn7bHNfTxaJXspoyP2qvIl3E"
           >
             <button className="hover:text-[#907d38] ">
               المهندسة سالي اسماعيل😊{' '}
