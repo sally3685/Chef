@@ -52,21 +52,16 @@ type reci = {
 };
 export default function Menu({ typeId }: { typeId: string }) {
   const isColorDark = (hexColor: string) => {
-    // Remove the # symbol from the hex color and convert it to RGB values
     const red = parseInt(hexColor.substring(1, 3), 16);
     const green = parseInt(hexColor.substring(3, 5), 16);
     const blue = parseInt(hexColor.substring(5, 7), 16);
 
-    // Calculate the relative luminance using the formula for sRGB color space
     const luminance = (0.2126 * red + 0.7152 * green + 0.0722 * blue) / 255;
 
-    // Check if the luminance value corresponds to a dark color
     return luminance <= 0.5;
   };
-  // const params = useParams();
   const [type, setType] = useState('');
   const [searchType, setSearchType] = useState('recipeName');
-  const [loa, setLoa] = useState(false);
   const [itemsArray, setItemsArray] = useState<reci[]>([]);
   let pathname = usePathname();
   if (
@@ -101,7 +96,7 @@ export default function Menu({ typeId }: { typeId: string }) {
 
     getItems();
     setError(null);
-  }, [typeId, refresh, pathname]);
+  }, [typeId, refresh]);
 
   useAnimation(() => {
     if (typeof document !== 'undefined') {
@@ -194,7 +189,7 @@ export default function Menu({ typeId }: { typeId: string }) {
   } else {
     return (
       <>
-        {isLoaded === false || isFetchLoad ? (
+        {isLoaded === false ? (
           <Loading />
         ) : (
           <main
