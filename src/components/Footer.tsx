@@ -12,7 +12,7 @@ export default function Footer() {
           <a
             href={'/SallyIsmail.pdf'}
             download="sallyIsmailResume.pdf"
-            target="https://qb1kwi9db3.ufs.sh/f/4nPIeTqMzPQRtb6QdtIUgSQGjn7bHNfTxaJXspoyP2qvIl3E"
+            target="https://qb1kwi9db3.ufs.sh/f/4nPIeTqMzPQRidb4MYjveOVlC6QT93Y0FXryGd7tKHzw2JaN"
           >
             <button className="hover:text-[#907d38] ">
               المهندسة سالي اسماعيل😊{' '}
