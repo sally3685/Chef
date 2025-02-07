@@ -9,6 +9,7 @@ import { SubmitButton } from '../_component/Button';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import gsap from 'gsap';
+import ErrorPage from '../error';
 const explaination = [
   'اذكر اسم واضح مشوق يعبر عن الوصفة',
   'معلومات إضافية مثل : وصفة مميزة لصيف دافئ ',
@@ -97,7 +98,16 @@ export default function AddRecipy() {
   return (
     <>
       {/* flex gap-10 justify-center items-center mx-auto p-4  max-w-7xl section-min-height  lg:flex-row-reverse flex-col */}
-      {isLoaded ? (
+      {isLoaded && !user ? (
+        <>
+          <ErrorPage
+            error={new Error('سجل دخول حتى تستطيع اضافة وصفة')}
+            reset={() => {
+              router.refresh();
+            }}
+          ></ErrorPage>
+        </>
+      ) : isLoaded ? (
         <main
           className="w-full flex gap-10 justify-center 
           items-center
